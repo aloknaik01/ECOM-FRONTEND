@@ -1,10 +1,18 @@
 import React from "react";
 import "./app.css";
 import { Search, ShoppingCart, User } from "lucide-react";
-
+import FeaturedProducts from "./pages/featured_products/FeaturedProducts.jsx";
+import CollectionsGrid from "./pages/Collection/CollectionsGrid.jsx";
+import Newsletter from "./components/newsletter/Newsletter.jsx";
+import BestSellingProducts from "./pages/best_selling/BestSellingProducts.jsx";
+import FlashSales from "./pages/flash_sell/FlashSales.jsx";
+import CasualSelection from "./pages/casual_selection/CasualSelection.jsx";
+import Marquee from "./components/Marquee/Marquee.jsx";
+import FeaturesBar from "./components/features_bar/FeaturesBar.jsx";
 
 const App = () => {
   return (
+    <>
     <div className="app">
       {/* Header */}
       <header className="header">
@@ -99,6 +107,19 @@ const App = () => {
         <button className="nav-arrow nav-arrow-right">›</button>
       </main>
     </div>
+
+
+
+    {/* Other pages */}
+     <FeaturedProducts/>
+   <CollectionsGrid/>
+   <Newsletter/>
+   <BestSellingProducts />
+   <FlashSales/>
+   <CasualSelection/>
+   <Marquee/>
+   <FeaturesBar/>
+    </>
 
   );
 };
