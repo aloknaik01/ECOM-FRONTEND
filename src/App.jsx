@@ -111,7 +111,7 @@ const App = () => {
 
 
     {/* Other pages */}
-     <FeaturedProducts/>
+   <FeaturedProducts/>
    <CollectionsGrid/>
    <Newsletter/>
    <BestSellingProducts />

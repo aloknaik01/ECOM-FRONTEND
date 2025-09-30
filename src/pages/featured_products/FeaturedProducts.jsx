@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './FeaturedProducts.css';
 import ProductCard from '../../components/product_card/ProductCard';
+import { useNavigate } from 'react-router';
 
 const FeaturedProducts = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -10,6 +11,12 @@ const FeaturedProducts = () => {
     colors: ['#ffdd44', '#ffffff', '#000000'],
     priceRange: '$18.00 - $20.00'
   };
+
+  const navigate = useNavigate();
+
+  function navigateToProductPage(productId) {
+navigate(`product-details/${productId}`)
+  }
 
   useEffect(() => {
     async function fetchAllData() {
@@ -77,7 +84,9 @@ const FeaturedProducts = () => {
           {productsToShow.map(product => (
             <div key={product.id} className="featured-product-item">
               {/* Product Card */}
-              <div className="product-card-wrapper">
+              
+              <div className="product-card-wrapper"
+              onClick={() => navigateToProductPage(product.id)}>
                 <ProductCard
                   id={product.id}
                   image={product.images?.[0] || product.image}
