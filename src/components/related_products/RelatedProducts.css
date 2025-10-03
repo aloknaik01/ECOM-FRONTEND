@@ -1,0 +1,108 @@
+.related-products-section {
+  padding: var(--space-16) 0;
+  background: var(--primary-color);
+}
+
+.related-section-title {
+  font-size: var(--font-size-3xl);
+  color: var(--text-dark);
+  font-weight: 700;
+  margin-bottom: var(--space-10);
+  letter-spacing: -0.02em;
+}
+
+.related-products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-8);
+  margin-bottom: var(--space-4);
+}
+
+.related-product-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  cursor: pointer;
+}
+
+.related-product-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.related-product-img-wrap {
+  width: 100%;
+  aspect-ratio: 4/5;
+  position: relative;
+  background: var(--background-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.related-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.related-product-badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  background: #f3f4f6;
+  color: var(--text-dark);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 2px 12px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  z-index: 2;
+}
+
+.related-product-info {
+  padding: var(--space-4) var(--space-3) var(--space-5) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.related-product-category {
+  font-size: var(--font-size-xs);
+  color: var(--text-light);
+  padding-bottom: var(--space-1);
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+.related-product-title {
+  font-size: var(--font-size-base);
+  color: var(--text-dark);
+  font-weight: 700;
+  margin-bottom: var(--space-1);
+  line-height: 1.3;
+}
+
+.related-product-price {
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+@media (max-width: 1024px) {
+  .related-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+}
+@media (max-width: 640px) {
+  .related-products-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}

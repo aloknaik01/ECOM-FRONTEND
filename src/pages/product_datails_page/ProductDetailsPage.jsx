@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import "./ProductDetailsPage.css";
 import { data, useParams } from 'react-router';
+import RelatedProducts from '../../components/related_products/RelatedProducts';
 const ProductPage = () => {
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('black');
   const [quantity, setQuantity] = useState(1);
   const [productData, setProductData] = useState({});
+  const [relatedProductData, setRelatedProductData] = useState([]);
 
   let { productId } = useParams();
   console.log(productId);
@@ -13,27 +15,38 @@ const ProductPage = () => {
 
 
   useEffect(() => {
-
-
-    fetProductData();
-
-    async function fetProductData() {
+    fetchProductData();
+    //product details data api calling
+    async function fetchProductData() {
       try {
-
         const res = await fetch(`https://api.escuelajs.co/api/v1/products/${productId}`);
         const data = await res.json();
         setProductData(data);
-        console.log("Data fetched")
       } catch (error) {
         console.log("Some thing went wrong!");
       }
     }
+  }, [])
 
+  useEffect(() => {
+    fetchRelatedProductData();
+    //realated data api calling
+    async function fetchRelatedProductData() {
+      try {
+        console.log('enterd')
+        const res = await fetch(`https://api.escuelajs.co/api/v1/products/3/related`);
+        const data = await res.json();
+        data.length > 0 ? setRelatedProductData(data) : setRelatedProductData([])
+        console.log("Related Data fetched")
+      } catch (error) {
+        console.log("Some thing went wrong! while fetching related data");
+      }
+    }
 
   }, [])
 
-  console.log(productData);
-  // console.log(productData?.category.name);
+
+  // console.log(relatedProductData);
 
 
   const sizes = ['XS', 'S', 'M', 'L', 'XL'];
@@ -182,6 +195,7 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+      <RelatedProducts products={relatedProductData} />
     </div>
   );
 };

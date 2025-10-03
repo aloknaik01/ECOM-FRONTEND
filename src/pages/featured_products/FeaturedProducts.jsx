@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 
 const FeaturedProducts = () => {
   const [allProducts, setAllProducts] = useState([]);
-  
+
   const others = {
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     colors: ['#ffdd44', '#ffffff', '#000000'],
@@ -15,7 +15,7 @@ const FeaturedProducts = () => {
   const navigate = useNavigate();
 
   function navigateToProductPage(productId) {
-navigate(`product-details/${productId}`)
+    navigate(`product-details/${productId}`)
   }
 
   useEffect(() => {
@@ -23,30 +23,30 @@ navigate(`product-details/${productId}`)
       try {
         const res = await fetch("https://api.escuelajs.co/api/v1/products");
         const data = await res.json();
-        
+
         // Add "others" to every product and format properly
         const updated = data.map((item, index) => ({
           ...item,
           ...others,
           // Add some variety to make it look more realistic
           priceRange: index % 2 === 0 ? '$18.00 - $20.00' : '$15.00 - $25.00',
-          colors: index % 3 === 0 ? ['#000000', '#ffffff', '#808080'] : 
-                 index % 3 === 1 ? ['#ff0000', '#00ff00', '#0000ff'] : 
-                 ['#ffdd44', '#ffffff', '#000000']
+          colors: index % 3 === 0 ? ['#000000', '#ffffff', '#808080'] :
+            index % 3 === 1 ? ['#ff0000', '#00ff00', '#0000ff'] :
+              ['#ffdd44', '#ffffff', '#000000']
         }));
-        
+
         setAllProducts(updated);
         console.log("fetched", updated);
       } catch (e) {
         console.log("Failed to fetch data", e);
       }
     }
-    
+
     fetchAllData();
   }, []);
 
   const [showAllProducts, setShowAllProducts] = useState(false);
-  
+
   // Show first 8 products by default, all when showAllProducts is true
   const productsToShow = showAllProducts ? allProducts : allProducts.slice(0, 8);
 
@@ -74,8 +74,8 @@ navigate(`product-details/${productId}`)
           <h2 className="section-title">Featured Products</h2>
           <div>
             <button className="view-all-btn" onClick={handleViewAllProducts}>
-            {showAllProducts ? 'Show Less' : 'View All Products'} →
-          </button>
+              {showAllProducts ? 'Show Less' : 'View All Products'} →
+            </button>
           </div>
         </div>
 
@@ -84,9 +84,9 @@ navigate(`product-details/${productId}`)
           {productsToShow.map(product => (
             <div key={product.id} className="featured-product-item">
               {/* Product Card */}
-              
+
               <div className="product-card-wrapper"
-              onClick={() => navigateToProductPage(product.id)}>
+                onClick={() => navigateToProductPage(product.id)}>
                 <ProductCard
                   id={product.id}
                   image={product.images?.[0] || product.image}
@@ -108,9 +108,9 @@ navigate(`product-details/${productId}`)
                 {/* Color Options */}
                 <div className="product-colors">
                   {product.colors.map((color, index) => (
-                    <button 
-                      key={index} 
-                      className="color-option" 
+                    <button
+                      key={index}
+                      className="color-option"
                       style={{ backgroundColor: color }}
                       title={`Color ${index + 1}`}
                       aria-label={`Color option ${index + 1}`}
@@ -121,8 +121,8 @@ navigate(`product-details/${productId}`)
                 {/* Size Options */}
                 <div className="product-sizes">
                   {product.sizes.map(size => (
-                    <button 
-                      key={size} 
+                    <button
+                      key={size}
                       className="size-option"
                     >
                       {size}
@@ -134,17 +134,17 @@ navigate(`product-details/${productId}`)
           ))}
         </div>
 
-          <div className='more-less'>
-            {
-              allProducts.length > 8 && !showAllProducts ?  (<button onClick={handleViewAllProducts}>
-                show more
-              </button>) : (<button  onClick={handleViewAllProducts}>
-                show less
-              </button>)
-            }
-            </div>
-         
-        
+        <div className='more-less'>
+          {
+            allProducts.length > 8 && !showAllProducts ? (<button onClick={handleViewAllProducts}>
+              show more
+            </button>) : (<button onClick={handleViewAllProducts}>
+              show less
+            </button>)
+          }
+        </div>
+
+
       </div>
     </section>
   );
