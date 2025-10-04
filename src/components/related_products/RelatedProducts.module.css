@@ -1,8 +1,8 @@
-/* FeaturedProducts.module.css - Scoped CSS for FeaturedProducts component */
+/* RelatedProducts.module.css - Complete with hover fixes */
 
-.featuredProductsSection {
+.relatedProductsSection {
   padding: var(--space-16) 0;
-  background-color: var(--primary-color);
+  background-color: var(--white);
 }
 
 /* Container */
@@ -23,7 +23,7 @@
 }
 
 .sectionTitle {
-  font-size: var(--font-size-4xl);
+  font-size: var(--font-size-3xl);
   font-weight: 700;
   color: var(--text-dark);
   margin: 0;
@@ -52,55 +52,121 @@
 }
 
 /* Products Grid */
-.featuredProductsGrid {
+.relatedProductsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-6);
   margin-bottom: var(--space-8);
 }
 
-/* Featured Product Item */
-.featuredProductItem {
+/* Related Product Item */
+.relatedProductItem {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 /* Product Card Wrapper */
 .productCardWrapper {
   width: 100%;
-}
-
-/* Product Card */
-.productCard {
-  background-color: var(--white);
-  border-radius: var(--radius-lg);
-  padding: var(--space-2);
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-normal);
+  cursor: pointer;
   position: relative;
-  overflow: hidden;
-  width: 100%;
 }
 
-.productCardHover:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+/* CRITICAL: Override ProductCard styles ONLY for hover actions in Related Products */
+.relatedProductsGrid .product-card {
+  /* Don't override basic card styles - let ProductCard.css handle it */
 }
 
-/* Product Details Section */
+/* Fix hover actions specifically in Related Products Grid */
+.relatedProductsGrid .product-card .product-actions {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all var(--transition-normal);
+  z-index: 10;
+}
+
+.relatedProductsGrid .product-card:hover .product-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Fix action buttons in Related Products */
+.relatedProductsGrid .product-card .action-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--white);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  color: var(--text-dark);
+  padding: 0;
+}
+
+.relatedProductsGrid .product-card .action-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.relatedProductsGrid .product-card .action-btn:hover {
+  background-color: var(--text-dark);
+  color: var(--white);
+  transform: scale(1.1);
+}
+
+.relatedProductsGrid .product-card .action-btn.liked {
+  background-color: #ff4757;
+  color: var(--white);
+}
+
+/* Ensure all specific buttons work */
+.relatedProductsGrid .product-card .quick-view-btn,
+.relatedProductsGrid .product-card .add-to-cart-btn,
+.relatedProductsGrid .product-card .wishlist-btn {
+  color: var(--text-dark);
+  background-color: var(--white);
+}
+
+.relatedProductsGrid .product-card .quick-view-btn:hover,
+.relatedProductsGrid .product-card .add-to-cart-btn:hover,
+.relatedProductsGrid .product-card .wishlist-btn:hover {
+  background-color: var(--text-dark);
+  color: var(--white);
+}
+
+/* Product Details Section (below the card) */
 .productDetailsSection {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-3) 0;
+  gap: var(--space-2);
 }
 
 /* Product Info Header */
 .productInfoHeader {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
+}
+
+.productCategory {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
 }
 
 .productDetailTitle {
@@ -117,101 +183,8 @@
 
 .productPriceRange {
   font-size: var(--font-size-sm);
-  color: var(--text-light);
-  font-weight: 500;
-}
-
-/* Color Options */
-.productColors {
-  display: flex;
-  gap: var(--space-2);
-  align-items: center;
-}
-
-.colorOption {
-  width: 16px;
-  height: 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 2px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  position: relative;
-  background: var(--white);
-}
-
-.colorOption:hover {
-  transform: scale(1.1);
-  border-color: var(--text-dark);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Size Options */
-.productSizes {
-  display: flex;
-  gap: var(--space-2);
-  align-items: center;
-}
-
-.sizeOption {
-  background: none;
-  border: 1px solid #d1d5db;
-  border-radius: var(--radius-sm);
-  padding: var(--space-1) var(--space-2);
-  font-size: var(--font-size-xs);
-  color: var(--text-light);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  min-width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 500;
-}
-
-.sizeOption:hover {
-  border-color: var(--text-dark);
   color: var(--text-dark);
-  background-color: #f9fafb;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .featuredProductsGrid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
-  }
-}
-
-@media (max-width: 768px) {
-  .featuredProductsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-  }
-
-  .productCard {
-    padding: var(--space-4);
-  }
-}
-
-@media (max-width: 640px) {
-  .featuredProductsGrid {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
-  }
-
-  .featuredProductItem {
-    max-width: 400px;
-    margin: 0 auto;
-  }
-}
-
-/* Focus states */
-.viewAllBtn:focus,
-.colorOption:focus,
-.sizeOption:focus {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
+  font-weight: 600;
 }
 
 /* More/Less Button */
@@ -219,8 +192,69 @@
   text-align: center;
 }
 
-.moreLessButton {
-  padding: var(--space-3);
-  border: none;
-  color: var(--text-light);
+.moreLess button {
+  padding: var(--space-3) var(--space-6);
+  border: 1px solid var(--secondary-color);
+  background: var(--white);
+  color: var(--text-dark);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.moreLess button:hover {
+  background: var(--text-dark);
+  color: var(--white);
+  border-color: var(--text-dark);
+}
+
+/* Focus states */
+.viewAllBtn:focus,
+.moreLess button:focus {
+  outline: 2px solid var(--text-dark);
+  outline-offset: 2px;
+}
+
+.relatedProductsGrid .product-card .action-btn:focus {
+  outline: 2px solid var(--text-dark);
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .relatedProductsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+}
+
+@media (max-width: 768px) {
+  .relatedProductsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .sectionTitle {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+@media (max-width: 640px) {
+  .relatedProductsGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .relatedProductItem {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* Show actions on mobile */
+  .relatedProductsGrid .product-card .product-actions {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

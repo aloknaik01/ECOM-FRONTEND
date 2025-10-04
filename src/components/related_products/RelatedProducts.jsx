@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router';
 
 const RelatedProducts = ({ id }) => {
   const [allProducts, setAllProducts] = useState([]);
+  const [showAllProducts, setShowAllProducts] = useState(false);
 
   const navigate = useNavigate();
 
   const navigateToProductPage = (productId) => {
-    navigate(`product-details/${productId}`);
+    navigate(`/product-details/${productId}`);
   };
 
   useEffect(() => {
@@ -23,51 +24,52 @@ const RelatedProducts = ({ id }) => {
       }
     }
 
-    fetchRelatedData();
-  }, []);
+    if (id) {
+      fetchRelatedData();
+    }
+  }, [id]);
 
-
-  const [showAllProducts, setShowAllProducts] = useState(false);
-
-  let productsToShow = [];
-
-  if (allProducts.length > 0) {
-    productsToShow = showAllProducts ? allProducts : allProducts.slice(0, 8);
-  } else {
-    productsToShow = []
-  }
+  const productsToShow = showAllProducts ? allProducts : allProducts.slice(0, 8);
 
   const handleViewAllProducts = () => setShowAllProducts(!showAllProducts);
-  const handleAddToCart = (productId) => {
+
+  const handleAddToCart = (productId, e) => {
+    if (e) e.stopPropagation(); // Prevent navigation
     const product = allProducts.find(p => p.id === productId);
-    alert(`Added "${product.title}" to cart!`);
-  };
-  const handleQuickView = (productId) => {
-    const product = allProducts.find(p => p.id === productId);
-    alert(`Quick view: ${product.title}`);
+    alert(`Added "${product?.title}" to cart!`);
   };
 
+  const handleQuickView = (productId, e) => {
+    if (e) e.stopPropagation(); // Prevent navigation
+    const product = allProducts.find(p => p.id === productId);
+    alert(`Quick view: ${product?.title}`);
+  };
+
+  // Don't render if no products
+  if (productsToShow.length === 0) {
+    return null;
+  }
+
   return (
-    productsToShow.length > 0 &&
-    <section className={styles.featuredProductsSection}>
+    <section className={styles.relatedProductsSection}>
       <div className={styles.container}>
         {/* Section Header */}
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Related Products</h2>
-          <div>
+          {allProducts.length > 8 && (
             <button
               className={styles.viewAllBtn}
               onClick={handleViewAllProducts}
             >
-              {showAllProducts.length > 0 ? 'Show Less' : 'View All Products'} →
+              {showAllProducts ? 'Show Less' : 'View All Products'} →
             </button>
-          </div>
+          )}
         </div>
 
         {/* Products Grid */}
-        <div className={styles.featuredProductsGrid}>
+        <div className={styles.relatedProductsGrid}>
           {productsToShow.map(product => (
-            <div key={product.id} className={styles.featuredProductItem}>
+            <div key={product.id} className={styles.relatedProductItem}>
               {/* Product Card */}
               <div
                 className={styles.productCardWrapper}
@@ -78,28 +80,34 @@ const RelatedProducts = ({ id }) => {
                   image={product.images?.[0] || product.image}
                   title={product.title}
                   price={product.price}
-                  onAddToCart={handleAddToCart}
-                  onQuickView={handleQuickView}
+                  originalPrice={product.price + 20}
+                  onAddToCart={(productId) => handleAddToCart(productId, window.event)}
+                  onQuickView={(productId) => handleQuickView(productId, window.event)}
                 />
               </div>
 
               {/* Product Details Section */}
               <div className={styles.productDetailsSection}>
                 <div className={styles.productInfoHeader}>
-                  <h3 className={styles.productDetailTitle}>{product.title}</h3>
-                  <div className={styles.productPriceRange}>{product.price}</div>
+                  <h3 className={styles.productCategory}>
+                    {product?.category?.name || 'PRODUCT'}
+                  </h3>
+                  <h4 className={styles.productDetailTitle}>{product.title}</h4>
+                  <div className={styles.productPriceRange}>${product.price}.00</div>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* More/Less Button */}
-        <div className={styles.moreLess}>
-          <button onClick={handleViewAllProducts}>
-            {allProducts.length > 8 && !showAllProducts ? 'Show More' : 'Show Less'}
-          </button>
-        </div>
+        {/* Show More/Less Button */}
+        {allProducts.length > 8 && (
+          <div className={styles.moreLess}>
+            <button onClick={handleViewAllProducts}>
+              {showAllProducts ? 'Show Less' : 'Show More'}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
