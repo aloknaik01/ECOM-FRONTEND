@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import "./ProductDetailsPage.css";
-import { data, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import RelatedProducts from '../../components/related_products/RelatedProducts';
 const ProductPage = () => {
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('black');
   const [quantity, setQuantity] = useState(1);
   const [productData, setProductData] = useState({});
-  const [relatedProductData, setRelatedProductData] = useState([]);
 
   let { productId } = useParams();
-  console.log(productId);
-
-
 
   useEffect(() => {
     fetchProductData();
@@ -28,28 +24,8 @@ const ProductPage = () => {
     }
   }, [])
 
-  useEffect(() => {
-    fetchRelatedProductData();
-    //realated data api calling
-    async function fetchRelatedProductData() {
-      try {
-        console.log('enterd')
-        const res = await fetch(`https://api.escuelajs.co/api/v1/products/3/related`);
-        const data = await res.json();
-        data.length > 0 ? setRelatedProductData(data) : setRelatedProductData([])
-        console.log("Related Data fetched")
-      } catch (error) {
-        console.log("Some thing went wrong! while fetching related data");
-      }
-    }
-
-  }, [])
-
-
-  // console.log(relatedProductData);
-
-
   const sizes = ['XS', 'S', 'M', 'L', 'XL'];
+
   const colors = [
     { name: 'black', code: '#000000' },
     { name: 'white', code: '#ffffff' },
@@ -66,6 +42,7 @@ const ProductPage = () => {
     <div className="product-page">
       <div className="container">
         <div className="product-container">
+
           {/* Product Images Section */}
           <div className="product-images">
             <div className="main-image">
@@ -193,9 +170,13 @@ const ProductPage = () => {
               </details>
             </div>
           </div>
+
+
         </div>
       </div>
-      <RelatedProducts products={relatedProductData} />
+
+      <RelatedProducts id={productId} />
+      
     </div>
   );
 };
