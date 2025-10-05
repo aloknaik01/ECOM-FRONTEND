@@ -7,11 +7,12 @@ import App from "./App.jsx";
 
 
 createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-  <Routes>
-    <Route path={"/"} element={<App/>}/>
-<Route path="/product-details/:productId" element={<ProductDetailsPage />} />
-  </Routes>
-   <Footer/>
-  </BrowserRouter>
+//   <BrowserRouter>
+//   <Routes>
+//     <Route path={"/"} element={<App/>}/>
+// <Route path="/product-details/:productId" element={<ProductDetailsPage />} />
+//   </Routes>
+//    <Footer/>
+//   </BrowserRouter>
+<App/>
 );
