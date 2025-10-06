@@ -1,0 +1,259 @@
+/* Layout uses variables from your index.css (assumed already imported globally) */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--background-light) 100%);
+  padding: var(--space-4);
+}
+
+/* Glassy Card */
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  animation: fadeIn var(--transition-normal);
+}
+
+/* Headings */
+.login-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: var(--space-2);
+}
+
+.login-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-light);
+  margin-bottom: var(--space-6);
+}
+
+/* Form */
+.form-group {
+  text-align: left;
+  margin-bottom: var(--space-4);
+}
+
+.form-group label {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
+  margin-bottom: var(--space-2);
+}
+
+/* Inputs */
+.form-group input {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--secondary-color);
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.6);
+  font-size: var(--font-size-base);
+  color: var(--text-dark);
+  transition: border var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+  background: var(--white);
+}
+
+/* Primary Button */
+.login-btn {
+  width: 100%;
+  background-color: var(--accent-color);
+  color: var(--text-dark);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  padding: var(--space-3);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  margin-top: var(--space-2);
+}
+
+.login-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Error */
+.error-text {
+  color: var(--accent-color);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-3);
+}
+
+/* Actions row */
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  align-items: center;
+}
+
+/* Demo button */
+.demo-btn {
+  background: transparent;
+  border: 1px dashed var(--secondary-color);
+  padding: calc(var(--space-2) + 2px) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.demo-btn:hover {
+  background: rgba(0,0,0,0.03);
+  transform: translateY(-2px);
+}
+
+/* Footer */
+.login-footer {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--text-light);
+}
+
+.login-footer a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(16, 24, 40, 0.5);
+  z-index: 1000;
+  padding: var(--space-4);
+}
+
+/* Modal box */
+.modal {
+  width: 100%;
+  max-width: 460px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-4);
+  animation: popIn var(--transition-normal);
+  outline: none;
+}
+
+/* Modal header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--text-dark);
+}
+
+/* Close button */
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  color: var(--text-dark);
+}
+
+/* Modal body: pretty JSON block */
+.modal-body {
+  background: #f7f7fb;
+  border: 1px solid var(--secondary-color);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--text-dark);
+  font-size: var(--font-size-sm);
+  white-space: pre;
+  overflow-x: auto;
+  max-height: 240px;
+}
+
+/* Modal footer */
+.modal-footer {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  margin-top: var(--space-3);
+}
+
+.modal-copy,
+.modal-use {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+.modal-copy {
+  background: transparent;
+  border: 1px solid var(--secondary-color);
+  color: var(--text-dark);
+}
+
+.modal-copy:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.modal-use {
+  background: var(--accent-color);
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.modal-use:hover {
+  transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .login-card { padding: var(--space-4); max-width: 340px; }
+  .modal { padding: var(--space-3); }
+  .modal-footer { flex-direction: column; align-items: stretch; }
+}

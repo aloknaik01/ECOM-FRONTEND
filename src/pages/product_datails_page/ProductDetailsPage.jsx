@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "./ProductDetailsPage.css";
 import { useParams } from 'react-router';
 import RelatedProducts from '../../components/related_products/RelatedProducts';
+
 const ProductPage = () => {
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('black');
@@ -9,6 +10,7 @@ const ProductPage = () => {
   const [productData, setProductData] = useState({});
 
   let { productId } = useParams();
+  console.log(productId)
 
   useEffect(() => {
     fetchProductData();

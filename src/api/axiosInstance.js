@@ -4,21 +4,15 @@ import { refreshTokenThunk, logout } from '../store/authSlice.js';
 
 const api = axios.create({
   baseURL: 'https://api.escuelajs.co/api/v1',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor to add access token
 api.interceptors.request.use((config) => {
   const token = store.getState().auth.accessToken;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Response interceptor to refresh tokens on 401 error
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -30,9 +24,7 @@ api.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const refreshResponse = await store.dispatch(
-          refreshTokenThunk(store.getState().auth.refreshToken)
-        );
+        const refreshResponse = await store.dispatch(refreshTokenThunk(store.getState().auth.refreshToken));
         if (refreshResponse.payload) {
           originalRequest.headers.Authorization = `Bearer ${refreshResponse.payload.access_token}`;
           return api(originalRequest);
