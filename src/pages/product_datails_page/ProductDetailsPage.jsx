@@ -17,7 +17,7 @@ const ProductPage = () => {
     //product details data api calling
     async function fetchProductData() {
       try {
-        const res = await fetch(`https://api.escuelajs.co/api/v1/products/${productId}`);
+        const res = await fetch(`https://fakestoreapi.com/products/${productId}`);
         const data = await res.json();
         setProductData(data);
       } catch (error) {
@@ -49,7 +49,7 @@ const ProductPage = () => {
           <div className="product-images">
             <div className="main-image">
               <img
-                src={productData?.images?.[0]}
+                src={productData?.image}
                 alt={productData?.title}
                 className="main-product-image"
               />
@@ -70,11 +70,11 @@ const ProductPage = () => {
           {/* Product Details Section */}
           <div className="product-details">
             <div className="product-header">
-              <span className="product-category">{productData?.category?.name}</span>
+              <span className="product-category">{productData?.category}</span>
               <h1 className="product-title">{productData?.title}</h1>
               <div className="product-price">
-                <span className="price-current">{productData?.price}.00 $ </span>
-                <span className="price-original">{productData?.price + 20}.00 $</span>
+                <span className="price-current">{productData?.price.toFixed(1)}$ </span>
+                <span className="price-original">{productData?.price.toFixed(1) + 20} $</span>
                 <span className="price-shipping">+ Free Shipping</span>
               </div>
             </div>
@@ -145,7 +145,7 @@ const ProductPage = () => {
             {/* Product Meta */}
             <div className="product-meta">
               <p><strong>SKU:</strong> N/A</p>
-              <p><strong>Category:</strong> {productData?.category?.name}</p>
+              <p><strong>Category:</strong> {productData?.category}</p>
             </div>
 
             {/* Expandable Sections */}
@@ -178,7 +178,7 @@ const ProductPage = () => {
       </div>
 
       <RelatedProducts id={productId} />
-      
+
     </div>
   );
 };

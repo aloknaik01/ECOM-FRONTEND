@@ -88,7 +88,7 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <div className="login-card" role="main" aria-labelledby="login-heading">
-        <h2 id="login-heading" className="login-title">Welcome Back 👋</h2>
+        <h2 id="login-heading" className="login-title">Welcome Back </h2>
         <p className="login-subtitle">Log in to access your account</p>
 
         <form onSubmit={handleSubmit} className="login-form" noValidate>

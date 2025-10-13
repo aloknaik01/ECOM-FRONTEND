@@ -21,19 +21,19 @@ const FeaturedProducts = () => {
   useEffect(() => {
     async function fetchAllData() {
       try {
-        const res = await fetch("https://api.escuelajs.co/api/v1/products");
+        const res = await fetch("https://fakestoreapi.com/products");
         const data = await res.json();
-
         const updated = data.map((item, index) => ({
           ...item,
           ...others,
           priceRange: index % 2 === 0 ? '$18.00 - $20.00' : '$15.00 - $25.00',
           colors: index % 3 === 0 ? ['#000000', '#ffffff', '#808080'] :
-            index % 3 === 1 ? ['#ff0000', '#00ff00', '#0000ff'] :
-              ['#ffdd44', '#ffffff', '#000000']
+          index % 3 === 1 ? ['#ff0000', '#00ff00', '#0000ff'] :
+          ['#ffdd44', '#ffffff', '#000000']
         }));
-
+        
         setAllProducts(updated);
+        console.log(updated)
       } catch (e) {
         console.log("Failed to fetch data", e);
       }
@@ -82,7 +82,7 @@ const FeaturedProducts = () => {
               >
                 <ProductCard
                   id={product.id}
-                  image={product.images?.[0] || product.image}
+                  image={product?.image}
                   title={product.title}
                   price={product.price}
                   onAddToCart={handleAddToCart}
