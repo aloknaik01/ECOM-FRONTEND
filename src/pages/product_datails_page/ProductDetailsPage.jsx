@@ -8,18 +8,20 @@ const ProductPage = () => {
   const [selectedColor, setSelectedColor] = useState('black');
   const [quantity, setQuantity] = useState(1);
   const [productData, setProductData] = useState({});
+  const [image, setImage] = useState('')
 
   let { productId } = useParams();
-  console.log(productId)
+  // console.log(productId)
 
   useEffect(() => {
     fetchProductData();
     //product details data api calling
     async function fetchProductData() {
       try {
-        const res = await fetch(`https://fakestoreapi.com/products/${productId}`);
+        const res = await fetch(`https://api.escuelajs.co/api/v1/products/${productId}`);
         const data = await res.json();
         setProductData(data);
+        setImage(data?.images?.[0]);
       } catch (error) {
         console.log("Some thing went wrong!");
       }
@@ -49,18 +51,19 @@ const ProductPage = () => {
           <div className="product-images">
             <div className="main-image">
               <img
-                src={productData?.image}
+                src={image || productData?.images?.[0]}
                 alt={productData?.title}
                 className="main-product-image"
               />
             </div>
             <div className="thumbnail-images">
-              {productData?.images?.slice(1).map((image, index) => (
-                <div key={index} className="thumbnail">
+              {productData?.images?.slice(1).map((img, index) => (
+                <div key={index} className="thumbnail" onClick={() => setImage(img)}>
                   <img
-                    src={image}
+                    src={img}
                     alt={`Product variant ${index + 1}`}
                     className="thumbnail-image"
+
                   />
                 </div>
               ))}
@@ -70,11 +73,11 @@ const ProductPage = () => {
           {/* Product Details Section */}
           <div className="product-details">
             <div className="product-header">
-              <span className="product-category">{productData?.category}</span>
+              <span className="product-category">{productData?.category?.name}</span>
               <h1 className="product-title">{productData?.title}</h1>
               <div className="product-price">
-                <span className="price-current">{productData?.price.toFixed(1)}$ </span>
-                <span className="price-original">{productData?.price.toFixed(1) + 20} $</span>
+                <span className="price-current">{productData?.price}$ </span>
+                <span className="price-original">{productData?.price + 20} $</span>
                 <span className="price-shipping">+ Free Shipping</span>
               </div>
             </div>
@@ -145,7 +148,7 @@ const ProductPage = () => {
             {/* Product Meta */}
             <div className="product-meta">
               <p><strong>SKU:</strong> N/A</p>
-              <p><strong>Category:</strong> {productData?.category}</p>
+              <p><strong>Category:</strong> {productData?.category?.name}</p>
             </div>
 
             {/* Expandable Sections */}
@@ -177,7 +180,7 @@ const ProductPage = () => {
         </div>
       </div>
 
-      <RelatedProducts id={productId} />
+      {/* <RelatedProducts id={productId} /> */}
 
     </div>
   );

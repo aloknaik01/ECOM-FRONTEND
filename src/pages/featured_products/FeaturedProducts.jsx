@@ -21,7 +21,7 @@ const FeaturedProducts = () => {
   useEffect(() => {
     async function fetchAllData() {
       try {
-        const res = await fetch("https://fakestoreapi.com/products");
+        const res = await fetch("https://api.escuelajs.co/api/v1/products");
         const data = await res.json();
         const updated = data.map((item, index) => ({
           ...item,
@@ -82,7 +82,7 @@ const FeaturedProducts = () => {
               >
                 <ProductCard
                   id={product.id}
-                  image={product?.image}
+                  image={product?.images?.[0]}
                   title={product.title}
                   price={product.price}
                   onAddToCart={handleAddToCart}
