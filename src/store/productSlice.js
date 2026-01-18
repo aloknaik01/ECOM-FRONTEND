@@ -1,4 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+<<<<<<< HEAD
+=======
+import { act } from "react";
+>>>>>>> b9bb26afde6c0219d68c81a85d2fe737ccdd670b
 
 const initialState = {
     products: [],

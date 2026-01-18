@@ -12,14 +12,22 @@ const Newsletter = () => {
     
     setIsLoading(true);
     
+<<<<<<< HEAD
  
+=======
+    // Simulate API call
+>>>>>>> b9bb26afde6c0219d68c81a85d2fe737ccdd670b
     setTimeout(() => {
       setIsSubscribed(true);
       setIsLoading(false);
       setEmail('');
       console.log('Subscribed with email:', email);
       
+<<<<<<< HEAD
     
+=======
+      // Reset after showing success message
+>>>>>>> b9bb26afde6c0219d68c81a85d2fe737ccdd670b
       setTimeout(() => {
         setIsSubscribed(false);
       }, 3000);
