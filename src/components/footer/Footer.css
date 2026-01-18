@@ -1,0 +1,193 @@
+/* Footer.css - Exactly matching the UI with CSS variables */
+
+.main-footer {
+  background-color: var(--white);
+  border-top: 1px solid #e5e7eb;
+  /* margin-top: var(--space-20); */
+}
+
+/* Container - consistent with existing components */
+.main-footer .container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+/* Main Footer Content */
+.footer-main {
+  padding: var(--space-16) 0 var(--space-12) 0;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-12);
+  align-items: start;
+}
+
+/* Footer Sections */
+.footer-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Section Titles - exactly like in the image */
+.footer-section-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 var(--space-6) 0;
+  line-height: 1.2;
+}
+
+/* Footer Links Lists */
+.footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footer-link {
+  color: #6b7280;
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  transition: color var(--transition-fast);
+  display: block;
+}
+
+.footer-link:hover {
+  color: var(--text-dark);
+}
+
+/* Footer Content (for Contact Us and Forever 2018 sections) */
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.footer-text {
+  color: #6b7280;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Contact Links */
+.footer-contact-link {
+  color: var(--text-dark);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  line-height: 1.5;
+  transition: color var(--transition-fast);
+  display: block;
+}
+
+.footer-contact-link:hover {
+  color: var(--accent-color);
+}
+
+/* Social Icons - positioned like in the image */
+.footer-social {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.footer-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #6b7280;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.footer-social-link:hover {
+  color: var(--text-dark);
+  background-color: #f9fafb;
+  transform: translateY(-1px);
+}
+
+/* Footer Bottom - exactly like in the image */
+.footer-bottom {
+  border-top: 1px solid #e5e7eb;
+  padding: var(--space-6) 0;
+}
+
+.footer-credit {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: #9ca3af;
+  text-align: left;
+  line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-10);
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-main {
+    padding: var(--space-12) 0 var(--space-10) 0;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+}
+
+@media (max-width: 640px) {
+  .main-footer .container {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+  
+  .footer-section-title {
+    font-size: var(--font-size-base);
+  }
+  
+  .footer-link,
+  .footer-text,
+  .footer-contact-link {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Loading animations - subtle */
+.footer-section {
+  opacity: 0;
+  animation: fadeInFooter 0.6s ease-out forwards;
+}
+
+.footer-section:nth-child(1) { animation-delay: 0.1s; }
+.footer-section:nth-child(2) { animation-delay: 0.2s; }
+.footer-section:nth-child(3) { animation-delay: 0.3s; }
+.footer-section:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInFooter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
