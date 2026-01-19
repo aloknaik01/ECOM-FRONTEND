@@ -12,20 +12,14 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",
-<<<<<<< HEAD
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "js-cookie": "^3.0.5",
-=======
->>>>>>> b9bb26afde6c0219d68c81a85d2fe737ccdd670b
     "lucide-react": "^0.544.0",
     "npm": "^11.6.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-<<<<<<< HEAD
     "react-hot-toast": "^2.6.0",
-=======
->>>>>>> b9bb26afde6c0219d68c81a85d2fe737ccdd670b
     "react-redux": "^9.2.0",
     "react-router": "^7.9.3",
     "react-router-dom": "^7.9.3",
@@ -36,22 +30,14 @@
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.3",
-<<<<<<< HEAD
     "autoprefixer": "^10.4.23",
     "baseline-browser-mapping": "^2.9.7",
-=======
-    "autoprefixer": "^10.4.21",
->>>>>>> b9bb26afde6c0219d68c81a85d2fe737ccdd670b
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.4.0",
     "postcss": "^8.5.6",
-<<<<<<< HEAD
     "tailwindcss": "^3.4.19",
-=======
-    "tailwindcss": "^3.4.17",
->>>>>>> b9bb26afde6c0219d68c81a85d2fe737ccdd670b
     "vite": "^7.1.7"
   }
 }

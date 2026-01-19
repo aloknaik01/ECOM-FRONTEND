@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 // import { createRoot } from "react-dom/client";
 // import "./index.css";
 // import App from "./App.jsx";
@@ -38,13 +38,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       />
     </Provider>
 );
-=======
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.jsx";
-
-
-createRoot(document.getElementById("root")).render(
-    <App />
-);
->>>>>>> b9bb26afde6c0219d68c81a85d2fe737ccdd670b
