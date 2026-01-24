@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import RegisterForm from '../components/auth/RegisterForm';
 
+
 const Register = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.auth);
