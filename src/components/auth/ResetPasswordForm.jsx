@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { authAPI } from '../../utils/api';
 import toast from 'react-hot-toast';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
+import { useTheme } from '../../contexts/ThemeContext';
+import { Eye, EyeOff, Lock, ShoppingBag, Moon, Sun, Check, X } from 'lucide-react';
 
 const ResetPasswordForm = () => {
   const { token } = useParams();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   const [formData, setFormData] = useState({
     password: '',
@@ -75,92 +76,238 @@ const ResetPasswordForm = () => {
     }
   };
 
+  // Password strength indicator
+  const getPasswordStrength = () => {
+    const password = formData.password;
+    if (!password) return { strength: 0, label: '', color: '' };
+
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/\d/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    const levels = [
+      { strength: 1, label: 'Weak', color: 'bg-red-500' },
+      { strength: 2, label: 'Fair', color: 'bg-orange-500' },
+      { strength: 3, label: 'Good', color: 'bg-yellow-500' },
+      { strength: 4, label: 'Strong', color: 'bg-green-500' },
+      { strength: 5, label: 'Very Strong', color: 'bg-green-600' },
+    ];
+
+    return levels.find((level) => level.strength === strength) || levels[0];
+  };
+
+  const passwordStrength = getPasswordStrength();
+
+  const passwordRequirements = [
+    { label: 'At least 8 characters', met: formData.password.length >= 8 },
+    { label: 'Contains uppercase letter', met: /[A-Z]/.test(formData.password) },
+    { label: 'Contains lowercase letter', met: /[a-z]/.test(formData.password) },
+    { label: 'Contains number', met: /\d/.test(formData.password) },
+  ];
+
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4 py-12 transition-colors duration-200">
+      {/* Theme Toggle Button */}
+      <button
+        onClick={toggleTheme}
+        className="fixed top-6 right-6 p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-200 z-50"
+        aria-label="Toggle theme"
+      >
+        {theme === 'light' ? (
+          <Moon className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+        ) : (
+          <Sun className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+        )}
+      </button>
+
+      <div className="w-full max-w-md">
+        {/* Logo & Brand */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800">Reset Password</h2>
-          <p className="text-gray-600 mt-2">Enter your new password</p>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-2xl mb-4 shadow-lg">
+            <ShoppingBag className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Reset Password
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Enter your new password below
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="relative">
-            <Input
-              label="New Password"
-              type={showPassword ? 'text' : 'password'}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              error={errors.password}
-              placeholder="Enter new password"
-              autoComplete="new-password"
-            />
+        {/* Reset Password Form Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transition-colors duration-200">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* New Password Input */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                New Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-colors ${
+                    errors.password ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                  }`}
+                  placeholder="Enter new password"
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                  )}
+                </button>
+              </div>
+
+              {/* Password Strength Indicator */}
+              {formData.password && (
+                <div className="mt-2">
+                  <div className="flex gap-1 mb-2">
+                    {[1, 2, 3, 4, 5].map((level) => (
+                      <div
+                        key={level}
+                        className={`h-1 flex-1 rounded transition-colors ${
+                          level <= passwordStrength.strength
+                            ? passwordStrength.color
+                            : 'bg-gray-200 dark:bg-gray-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <p className={`text-xs font-medium ${passwordStrength.color.replace('bg-', 'text-')}`}>
+                    {passwordStrength.label}
+                  </p>
+
+                  {/* Password Requirements */}
+                  <div className="mt-3 space-y-1">
+                    {passwordRequirements.map((req, index) => (
+                      <div key={index} className="flex items-center text-xs">
+                        {req.met ? (
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                        ) : (
+                          <X className="w-4 h-4 text-gray-400 mr-2" />
+                        )}
+                        <span className={req.met ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}>
+                          {req.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Confirm Password Input */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Confirm New Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-colors ${
+                    errors.confirmPassword ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                  }`}
+                  placeholder="Confirm new password"
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                  )}
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
             <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {showPassword ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.93412C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-</svg>
-) : (
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-<path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-<path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-</svg>
-)}
-</button>
-</div><div className="relative">
-        <Input
-          label="Confirm New Password"
-          type={showConfirmPassword ? 'text' : 'password'}
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          error={errors.confirmPassword}
-          placeholder="Confirm new password"
-          autoComplete="new-password"
-        />
-        <button
-          type="button"
-          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-        >
-          {showConfirmPassword ? (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          )}
-        </button>
-      </div>
+              {loading ? (
+                <>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Resetting...
+                </>
+              ) : (
+                'Reset Password'
+              )}
+            </button>
 
-      <Button
-        type="submit"
-        variant="primary"
-        size="lg"
-        loading={loading}
-        className="w-full"
-      >
-        Reset Password
-      </Button>
+            {/* Back to Login */}
+            <div className="text-center">
+              <Link
+                to="/login"
+                className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+              >
+                Back to Login
+              </Link>
+            </div>
+          </form>
+        </div>
 
-      <div className="text-center">
-        <Link
-          to="/login"
-          className="text-sm font-medium text-primary-600 hover:text-primary-700"
-        >
-          Back to Login
-        </Link>
+        {/* Footer */}
+        <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+          Need help?{' '}
+          <Link to="/support" className="underline hover:text-gray-700 dark:hover:text-gray-300">
+            Contact Support
+          </Link>
+        </p>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
   );
 };
 
