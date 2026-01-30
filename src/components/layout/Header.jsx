@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../store/slices/authSlice';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useState } from 'react';
 import { ShoppingBag, Moon, Sun, User, LogOut, ShoppingCart, Heart } from 'lucide-react';
 

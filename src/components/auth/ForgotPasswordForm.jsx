@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authAPI } from '../../utils/api';
 import toast from 'react-hot-toast';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { Mail, ArrowLeft, ShoppingBag, Moon, Sun, CheckCircle } from 'lucide-react';
 
 const ForgotPasswordForm = () => {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { authAPI } from '../../utils/api';
 import toast from 'react-hot-toast';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { Eye, EyeOff, Lock, ShoppingBag, Moon, Sun, Check, X } from 'lucide-react';
 
 const ResetPasswordForm = () => {

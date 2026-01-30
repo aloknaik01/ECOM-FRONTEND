@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from '../../store/slices/authSlice';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { Eye, EyeOff, Lock, Mail, User, ShoppingBag, Moon, Sun, Check, X } from 'lucide-react';
 
 const RegisterForm = () => {
