@@ -1,90 +1,98 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
-import { ThemeProvider } from './context/ThemeContext';
 import { fetchUser } from './store/slices/authSlice';
 
-// Layout Components
-import ProtectedRoute from './components/layout/ProtectedRoute';
+// Layout
 import Header from './components/layout/Header';
+import ProtectedRoute from './components/layout/ProtectedRoute';
+import PageLoader from './components/ui/PageLoader';
 
 // Pages
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import Home from './pages/Home';
 import Profile from './pages/Profile';
-import PageLoader from './components/ui/PageLoader';
 
 function App() {
   const dispatch = useDispatch();
+  const { isAuthenticated, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 
+  if (loading) {
+    return <PageLoader />;
+  }
+
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: 'var(--toast-bg)',
-                color: 'var(--toast-color)',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#fff',
-                },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fff',
-                },
-              },
-            }}
+    <Router>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+          success: {
+            duration: 3000,
+            style: {
+              background: '#10b981',
+            },
+          },
+          error: {
+            duration: 4000,
+            style: {
+              background: '#ef4444',
+            },
+          },
+        }}
+      />
+
+      <div className="min-h-screen bg-gray-50">
+        {isAuthenticated && <Header />}
+        
+        <Routes>
+          {/* Public Routes */}
+          <Route
+            path="/login"
+            element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
           />
-          
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/password/reset/:token" element={<ResetPassword />} />
+          <Route
+            path="/register"
+            element={isAuthenticated ? <Navigate to="/" replace /> : <Register />}
+          />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/password/reset/:token" element={<ResetPassword />} />
 
-            {/* Protected Routes */}
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Header />
-                  <Home />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Header />
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
+          {/* Protected Routes */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
 
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </ThemeProvider>
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
