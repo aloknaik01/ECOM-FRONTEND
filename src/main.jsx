@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/store.js';
 import App from './App.jsx';
 import './index.css';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 
 // Remove preload class after initial render to enable transitions
 window.addEventListener('load', () => {
@@ -11,9 +12,10 @@ window.addEventListener('load', () => {
 });
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <Provider store={store}>
+  <Provider store={store}>
+    <ThemeProvider>
       <App />
-    </Provider>
-  </React.StrictMode>
+    </ThemeProvider>
+
+  </Provider>
 );
