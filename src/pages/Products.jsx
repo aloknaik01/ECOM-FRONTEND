@@ -45,7 +45,7 @@ const Products = () => {
         ),
       });
 
-      const data = await productAPI.getAllProducts(params.toString());
+      const data = await productAPI.getAll(params.toString());
       setProducts(data.products);
       setTotalProducts(data.totalProducts);
     } catch (error) {

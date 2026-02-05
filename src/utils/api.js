@@ -91,16 +91,16 @@ export const authAPI = {
     }),
 };
 
-// ── PRODUCTS 
+// ── PRODUCTS API 
 export const productAPI = {
   // Public routes
-  getAllProducts: (params) =>
-    apiClient(`/product/all?${params}`, {
+  getAll: (params) =>
+    apiClient(`/product/all${params ? '?' + params : ''}`, {
       method: 'GET',
     }),
 
   search: (keyword, page = 1) =>
-    apiClient(`/product/search?q=${keyword}&page=${page}`, {
+    apiClient(`/product/search?q=${encodeURIComponent(keyword)}&page=${page}`, {
       method: 'GET',
     }),
 
@@ -120,7 +120,7 @@ export const productAPI = {
     }),
 
   getByCategory: (category, page = 1) =>
-    apiClient(`/product/category/${category}?page=${page}`, {
+    apiClient(`/product/category/${encodeURIComponent(category)}?page=${page}`, {
       method: 'GET',
     }),
 
@@ -152,53 +152,25 @@ export const productAPI = {
       method: 'POST',
       body: JSON.stringify({ userPrompt }),
     }),
-
-  // Admin routes
-  admin: {
-    create: (formData) =>
-      apiClient('/product/admin/create', {
-        method: 'POST',
-        body: formData, // FormData for file upload
-      }),
-
-    update: (id, formData) =>
-      apiClient(`/product/admin/update/${id}`, {
-        method: 'PUT',
-        body: formData, // FormData for file upload
-      }),
-
-    delete: (id) =>
-      apiClient(`/product/admin/delete/${id}`, {
-        method: 'DELETE',
-      }),
-
-    getAll: (params) =>
-      apiClient(`/product/admin/all?${params}`, {
-        method: 'GET',
-      }),
-
-    getStatistics: () =>
-      apiClient('/product/admin/statistics', {
-        method: 'GET',
-      }),
-  },
 };
 
 
-// ── ORDERS 
-
+// ── ORDERS API 
 export const orderAPI = {
+  // Place new order
   place: (orderData) =>
     apiClient('/order/new', {
       method: 'POST',
       body: JSON.stringify(orderData),
     }),
 
+  // Get single order
   getSingle: (orderId) =>
     apiClient(`/order/${orderId}`, {
       method: 'GET',
     }),
 
+  // Get my orders
   getMyOrders: () =>
     apiClient('/order/orders/me', {
       method: 'GET',

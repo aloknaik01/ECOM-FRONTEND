@@ -1,23 +1,28 @@
-import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { Toaster } from 'react-hot-toast';
-import { fetchUser } from './store/slices/authSlice';
+import { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Toaster } from "react-hot-toast";
+import { fetchUser } from "./store/slices/authSlice";
 
 // Layout
-import Header from './components/layout/Header';
-import ProtectedRoute from './components/layout/ProtectedRoute';
-import PageLoader from './components/ui/PageLoader';
+import Header from "./components/layout/Header";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
+import PageLoader from "./components/ui/PageLoader";
 
 // Pages
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import Profile from './pages/Profile';
-import ProductDetail from './pages/ProductDetail';
-import Products from './pages/Products';
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Profile from "./pages/Profile";
+import ProductDetail from "./pages/ProductDetail";
+import Products from "./pages/Products";
 
 function App() {
   const dispatch = useDispatch();
@@ -38,19 +43,19 @@ function App() {
         toastOptions={{
           duration: 3000,
           style: {
-            background: '#363636',
-            color: '#fff',
+            background: "#363636",
+            color: "#fff",
           },
           success: {
             duration: 3000,
             style: {
-              background: '#10b981',
+              background: "#10b981",
             },
           },
           error: {
             duration: 4000,
             style: {
-              background: '#ef4444',
+              background: "#ef4444",
             },
           },
         }}
@@ -58,7 +63,7 @@ function App() {
 
       <div className="min-h-screen bg-gray-50">
         {isAuthenticated && <Header />}
-        
+
         <Routes>
           {/* Public Routes */}
           <Route
@@ -67,7 +72,9 @@ function App() {
           />
           <Route
             path="/register"
-            element={isAuthenticated ? <Navigate to="/" replace /> : <Register />}
+            element={
+              isAuthenticated ? <Navigate to="/" replace /> : <Register />
+            }
           />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/password/reset/:token" element={<ResetPassword />} />
@@ -89,23 +96,23 @@ function App() {
               </ProtectedRoute>
             }
           />
-  <Route
-  path="/products"
-  element={
-    <ProtectedRoute>
-      <Products />
-    </ProtectedRoute>
-  }
-/>
 
-<Route
-  path="/product/:id"
-  element={
-    <ProtectedRoute>
-      <ProductDetail />
-    </ProtectedRoute>
-  }
-/>
+          <Route
+            path="/products"
+            element={
+              <ProtectedRoute>
+                <Products />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/product/:id"
+            element={
+              <ProtectedRoute>
+                <ProductDetail />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
