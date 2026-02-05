@@ -183,3 +183,43 @@ export const productAPI = {
       }),
   },
 };
+
+
+// ── ORDERS 
+
+export const orderAPI = {
+  place: (orderData) =>
+    apiClient('/order/new', {
+      method: 'POST',
+      body: JSON.stringify(orderData),
+    }),
+
+  getSingle: (orderId) =>
+    apiClient(`/order/${orderId}`, {
+      method: 'GET',
+    }),
+
+  getMyOrders: () =>
+    apiClient('/order/orders/me', {
+      method: 'GET',
+    }),
+
+  // Admin routes
+  admin: {
+    getAll: () =>
+      apiClient('/order/admin/getall', {
+        method: 'GET',
+      }),
+
+    updateStatus: (orderId, status) =>
+      apiClient(`/order/admin/update/${orderId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+      }),
+
+    delete: (orderId) =>
+      apiClient(`/order/admin/delete/${orderId}`, {
+        method: 'DELETE',
+      }),
+  },
+};
