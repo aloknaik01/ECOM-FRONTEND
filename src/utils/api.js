@@ -91,3 +91,95 @@ export const authAPI = {
     }),
 };
 
+// ── PRODUCTS 
+export const productAPI = {
+  // Public routes
+  getAllProducts: (params) =>
+    apiClient(`/product/all?${params}`, {
+      method: 'GET',
+    }),
+
+  search: (keyword, page = 1) =>
+    apiClient(`/product/search?q=${keyword}&page=${page}`, {
+      method: 'GET',
+    }),
+
+  getCategories: () =>
+    apiClient('/product/categories', {
+      method: 'GET',
+    }),
+
+  getFeatured: () =>
+    apiClient('/product/featured', {
+      method: 'GET',
+    }),
+
+  getNewArrivals: () =>
+    apiClient('/product/new-arrivals', {
+      method: 'GET',
+    }),
+
+  getByCategory: (category, page = 1) =>
+    apiClient(`/product/category/${category}?page=${page}`, {
+      method: 'GET',
+    }),
+
+  getById: (id) =>
+    apiClient(`/product/${id}`, {
+      method: 'GET',
+    }),
+
+  getRelated: (id) =>
+    apiClient(`/product/${id}/related`, {
+      method: 'GET',
+    }),
+
+  // Reviews
+  postReview: (productId, reviewData) =>
+    apiClient(`/product/review/post/${productId}`, {
+      method: 'PUT',
+      body: JSON.stringify(reviewData),
+    }),
+
+  deleteReview: (productId) =>
+    apiClient(`/product/review/delete/${productId}`, {
+      method: 'DELETE',
+    }),
+
+  // AI Search
+  aiSearch: (userPrompt) =>
+    apiClient('/product/ai-search', {
+      method: 'POST',
+      body: JSON.stringify({ userPrompt }),
+    }),
+
+  // Admin routes
+  admin: {
+    create: (formData) =>
+      apiClient('/product/admin/create', {
+        method: 'POST',
+        body: formData, // FormData for file upload
+      }),
+
+    update: (id, formData) =>
+      apiClient(`/product/admin/update/${id}`, {
+        method: 'PUT',
+        body: formData, // FormData for file upload
+      }),
+
+    delete: (id) =>
+      apiClient(`/product/admin/delete/${id}`, {
+        method: 'DELETE',
+      }),
+
+    getAll: (params) =>
+      apiClient(`/product/admin/all?${params}`, {
+        method: 'GET',
+      }),
+
+    getStatistics: () =>
+      apiClient('/product/admin/statistics', {
+        method: 'GET',
+      }),
+  },
+};
