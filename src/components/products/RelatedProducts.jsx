@@ -16,7 +16,7 @@ const RelatedProducts = ({ productId, category }) => {
   const fetchRelatedProducts = async () => {
     setLoading(true);
     try {
-      const data = await productAPI.getRelatedProducts(productId);
+      const data = await productAPI.getRelated(productId);
       setProducts(data.products || []);
     } catch (error) {
       console.error('Failed to fetch related products:', error);

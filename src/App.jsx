@@ -16,6 +16,8 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Profile from './pages/Profile';
+import ProductDetail from './pages/ProductDetail';
+import Products from './pages/Products';
 
 function App() {
   const dispatch = useDispatch();
@@ -87,6 +89,23 @@ function App() {
               </ProtectedRoute>
             }
           />
+  <Route
+  path="/products"
+  element={
+    <ProtectedRoute>
+      <Products />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/product/:id"
+  element={
+    <ProtectedRoute>
+      <ProductDetail />
+    </ProtectedRoute>
+  }
+/>
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
