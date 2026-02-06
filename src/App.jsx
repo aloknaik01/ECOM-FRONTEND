@@ -26,6 +26,7 @@ import Products from "./pages/Products";
 import OrderDetail from "./pages/OrderDetail";
 import Orders from "./pages/Orders";
 import Checkout from "./pages/Checkout";
+import Cart from "./pages/Cart";
 
 function App() {
   const dispatch = useDispatch();
@@ -138,6 +139,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Checkout />
+              </ProtectedRoute>
+            }
+          />
+
+           <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <Cart />
               </ProtectedRoute>
             }
           />
