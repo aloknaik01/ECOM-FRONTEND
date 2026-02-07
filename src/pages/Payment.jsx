@@ -1,14 +1,14 @@
-import { useEffect } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import StripeCheckout from '../components/payment/StripeCheckout';
-import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { useEffect } from "react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import StripeCheckout from "../components/payment/StripeCheckout";
+import { ArrowLeft, ShoppingBag } from "lucide-react";
 
 // Load Stripe - use environment variable or test key
 const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 
-  'pk_test_51QnmKSD6B2jjw9MevSMjT3zvCVvAkRWCqz6fD4tW7bNpvHPNGMLqMEy9oL9sZP3E6PqhKQOxAzgvWPzChDo9DWtH00i1YvDIAq'
+  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
+    "pk_test_51QnmKSD6B2jjw9MevSMjT3zvCVvAkRWCqz6fD4tW7bNpvHPNGMLqMEy9oL9sZP3E6PqhKQOxAzgvWPzChDo9DWtH00i1YvDIAq",
 );
 
 const Payment = () => {
@@ -19,7 +19,7 @@ const Payment = () => {
   useEffect(() => {
     // Redirect if accessed directly without payment data
     if (!clientSecret || !totalAmount) {
-      navigate('/checkout');
+      navigate("/checkout");
     }
   }, [clientSecret, totalAmount, navigate]);
 
@@ -30,15 +30,16 @@ const Payment = () => {
   const options = {
     clientSecret,
     appearance: {
-      theme: 'stripe',
+      theme: "stripe",
       variables: {
-        colorPrimary: '#0284c7',
-        colorBackground: '#ffffff',
-        colorText: '#1f2937',
-        colorDanger: '#ef4444',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        spacingUnit: '4px',
-        borderRadius: '8px',
+        colorPrimary: "#0284c7",
+        colorBackground: "#ffffff",
+        colorText: "#1f2937",
+        colorDanger: "#ef4444",
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        spacingUnit: "4px",
+        borderRadius: "8px",
       },
     },
   };
@@ -67,7 +68,10 @@ const Payment = () => {
           {/* Payment Form */}
           <div className="lg:col-span-2">
             <Elements stripe={stripePromise} options={options}>
-              <StripeCheckout clientSecret={clientSecret} totalAmount={totalAmount} />
+              <StripeCheckout
+                clientSecret={clientSecret}
+                totalAmount={totalAmount}
+              />
             </Elements>
           </div>
 
@@ -82,7 +86,9 @@ const Payment = () => {
               <div className="space-y-4">
                 <div className="flex justify-between text-gray-700 dark:text-gray-300">
                   <span>Total Amount</span>
-                  <span className="font-semibold">${totalAmount?.toFixed(2)}</span>
+                  <span className="font-semibold">
+                    ${totalAmount?.toFixed(2)}
+                  </span>
                 </div>
 
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
@@ -152,16 +158,22 @@ const Payment = () => {
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-8 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 flex items-center justify-center">
-                    <span className="text-xs font-bold text-blue-600">VISA</span>
+                    <span className="text-xs font-bold text-blue-600">
+                      VISA
+                    </span>
                   </div>
                   <div className="w-12 h-8 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 flex items-center justify-center">
                     <span className="text-xs font-bold text-red-600">MC</span>
                   </div>
                   <div className="w-12 h-8 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 flex items-center justify-center">
-                    <span className="text-xs font-bold text-blue-700">AMEX</span>
+                    <span className="text-xs font-bold text-blue-700">
+                      AMEX
+                    </span>
                   </div>
                   <div className="w-12 h-8 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 flex items-center justify-center">
-                    <span className="text-xs font-bold text-orange-600">DISC</span>
+                    <span className="text-xs font-bold text-orange-600">
+                      DISC
+                    </span>
                   </div>
                 </div>
               </div>
