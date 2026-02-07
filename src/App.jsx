@@ -1,32 +1,30 @@
-import { useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { Toaster } from "react-hot-toast";
-import { fetchUser } from "./store/slices/authSlice";
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Toaster } from 'react-hot-toast';
+import { fetchUser } from './store/slices/authSlice';
 
 // Layout
-import Header from "./components/layout/Header";
-import ProtectedRoute from "./components/layout/ProtectedRoute";
-import PageLoader from "./components/ui/PageLoader";
+import Header from './components/layout/Header';
+import ProtectedRoute from './components/layout/ProtectedRoute';
+import PageLoader from './components/ui/PageLoader';
 
 // Pages
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import Profile from "./pages/Profile";
-import ProductDetail from "./pages/ProductDetail";
-import Products from "./pages/Products";
-import OrderDetail from "./pages/OrderDetail";
-import Orders from "./pages/Orders";
-import Checkout from "./pages/Checkout";
-import Cart from "./pages/Cart";
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import Profile from './pages/Profile';
+import ProductDetail from './pages/ProductDetail';
+import Products from './pages/Products';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import Payment from './pages/Payment';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailed from './pages/PaymentFailed';
+import Orders from './pages/Orders';
+import OrderDetail from './pages/OrderDetail';
 
 function App() {
   const dispatch = useDispatch();
@@ -47,27 +45,29 @@ function App() {
         toastOptions={{
           duration: 3000,
           style: {
-            background: "#363636",
-            color: "#fff",
+            background: 'var(--toast-bg)',
+            color: 'var(--toast-color)',
           },
           success: {
             duration: 3000,
-            style: {
-              background: "#10b981",
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
             },
           },
           error: {
             duration: 4000,
-            style: {
-              background: "#ef4444",
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
             },
           },
         }}
       />
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {isAuthenticated && <Header />}
-
+        
         <Routes>
           {/* Public Routes */}
           <Route
@@ -76,9 +76,7 @@ function App() {
           />
           <Route
             path="/register"
-            element={
-              isAuthenticated ? <Navigate to="/" replace /> : <Register />
-            }
+            element={isAuthenticated ? <Navigate to="/" replace /> : <Register />}
           />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/password/reset/:token" element={<ResetPassword />} />
@@ -100,7 +98,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/products"
             element={
@@ -117,7 +114,46 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment"
+            element={
+              <ProtectedRoute>
+                <Payment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment/success"
+            element={
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment/failed"
+            element={
+              <ProtectedRoute>
+                <PaymentFailed />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/orders"
             element={
@@ -131,23 +167,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <OrderDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/checkout"
-            element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            }
-          />
-
-           <Route
-            path="/cart"
-            element={
-              <ProtectedRoute>
-                <Cart />
               </ProtectedRoute>
             }
           />
