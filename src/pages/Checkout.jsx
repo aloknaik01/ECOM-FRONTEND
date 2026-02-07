@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { placeOrder } from '../store/slices/orderSlice';
-import { clearCart } from '../store/slices/cartSlice';
-import { MapPin, CreditCard, ShoppingBag } from 'lucide-react';
+import { MapPin, ShoppingBag } from 'lucide-react';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import StripeCheckout from '../components/payment/StripeCheckout';
 import toast from 'react-hot-toast';
+
+// Load Stripe
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51QnmKSD6B2jjw9MevSMjT3zvCVvAkRWCqz6fD4tW7bNpvHPNGMLqMEy9oL9sZP3E6PqhKQOxAzgvWPzChDo9DWtH00i1YvDIAq');
 
 const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { items } = useSelector((state) => state.cart);
-  const { placingOrder } = useSelector((state) => state.orders);
+  const { placingOrder, paymentIntent } = useSelector((state) => state.orders);
 
   const [shippingInfo, setShippingInfo] = useState({
     full_name: '',
@@ -23,6 +28,7 @@ const Checkout = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [currentStep, setCurrentStep] = useState(1); // 1: Shipping, 2: Payment
 
   const subtotal = items.reduce(
     (sum, item) => sum + Number(item.product.price) * item.quantity,
@@ -87,12 +93,14 @@ const Checkout = () => {
     const result = await dispatch(placeOrder(orderData));
 
     if (placeOrder.fulfilled.match(result)) {
-      // Handle Stripe payment here
-      const { paymentIntent } = result.payload;
-      
-      // For now, just clear cart and redirect
-      dispatch(clearCart());
-      navigate('/orders');
+      // Navigate to payment page with client secret
+      navigate('/payment', { 
+        state: { 
+          clientSecret: result.payload.paymentIntent,
+          orderId: result.payload.orderId,
+          totalAmount: result.payload.total_price
+        } 
+      });
     }
   };
 
