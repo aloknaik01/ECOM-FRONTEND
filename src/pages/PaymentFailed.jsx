@@ -1,188 +1,153 @@
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { XCircle, ArrowLeft, RefreshCw, AlertTriangle, Home } from 'lucide-react';
+import { useLocation, Link } from 'react-router-dom';
+import { XCircle, RefreshCw, ArrowLeft, HelpCircle } from 'lucide-react';
 
 const PaymentFailed = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { error, orderId } = location.state || {};
-
-  const handleRetry = () => {
-    navigate('/checkout');
-  };
+  const { error, amount } = location.state || {};
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4 py-12">
-      <div className="max-w-2xl w-full">
-        {/* Error Icon */}
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Failed Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-12 text-center">
+          {/* Failed Icon */}
           <div className="inline-flex items-center justify-center w-24 h-24 bg-red-100 dark:bg-red-900/30 rounded-full mb-6">
-            <XCircle className="w-16 h-16 text-red-600 dark:text-red-400" />
+            <XCircle className="w-12 h-12 text-red-600 dark:text-red-400" />
           </div>
-          
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+
+          {/* Failed Message */}
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Payment Failed
           </h1>
-          
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-2">
-            We couldn't process your payment
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+            We couldn't process your payment. Please try again.
           </p>
-          
-          <p className="text-lg text-gray-500 dark:text-gray-500">
-            Don't worry, your order is saved and no charges were made
-          </p>
-        </div>
 
-        {/* Error Details Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
-          {/* Error Message */}
+          {/* Error Details */}
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl p-6 mb-6">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="font-bold text-red-900 dark:text-red-200 mb-2">
-                    Error Details
-                  </h3>
-                  <p className="text-red-800 dark:text-red-300">
-                    {error}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Order ID if available */}
-          {orderId && (
-            <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                Order ID (Pending Payment)
-              </p>
-              <p className="font-mono text-sm text-gray-900 dark:text-white">
-                {orderId.slice(0, 20)}...
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-8">
+              <p className="text-sm text-red-800 dark:text-red-300">
+                <strong>Error:</strong> {error}
               </p>
             </div>
           )}
 
           {/* Common Reasons */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 mb-8 text-left">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <HelpCircle className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               Common Reasons for Payment Failure
             </h3>
-            
-            <div className="space-y-3">
-              <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
-                <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Insufficient funds in your account</p>
-              </div>
-              
-              <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
-                <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Incorrect card details (number, expiry, or CVV)</p>
-              </div>
-              
-              <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
-                <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Card declined by your bank</p>
-              </div>
-              
-              <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
-                <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Card has expired or reached its limit</p>
-              </div>
-              
-              <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
-                <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Network connectivity issues</p>
-              </div>
-            </div>
+            <ul className="space-y-2">
+              <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+                <span className="text-red-500 mt-1">•</span>
+                <span>Insufficient funds in your account</span>
+              </li>
+              <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+                <span className="text-red-500 mt-1">•</span>
+                <span>Incorrect card details (number, CVV, or expiry date)</span>
+              </li>
+              <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+                <span className="text-red-500 mt-1">•</span>
+                <span>Card has been declined by your bank</span>
+              </li>
+              <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+                <span className="text-red-500 mt-1">•</span>
+                <span>Network or connection issues</span>
+              </li>
+              <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+                <span className="text-red-500 mt-1">•</span>
+                <span>Card has expired or been blocked</span>
+              </li>
+            </ul>
           </div>
 
-          {/* What to Do Next */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 mb-6">
-            <h3 className="text-lg font-bold text-blue-900 dark:text-blue-200 mb-4">
-              What You Can Do
+          {/* What to Do Section */}
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8 text-left">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              What Should I Do?
             </h3>
-            
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-white text-sm font-bold">1</span>
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">
+                  1
                 </div>
                 <div>
-                  <p className="font-semibold text-blue-900 dark:text-blue-200">
+                  <p className="font-medium text-gray-900 dark:text-white">
                     Check Your Card Details
                   </p>
-                  <p className="text-sm text-blue-800 dark:text-blue-300">
-                    Verify card number, expiry date, and CVV are correct
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Make sure your card number, CVV, and expiry date are correct.
                   </p>
                 </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-white text-sm font-bold">2</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">
+                  2
                 </div>
                 <div>
-                  <p className="font-semibold text-blue-900 dark:text-blue-200">
+                  <p className="font-medium text-gray-900 dark:text-white">
                     Contact Your Bank
                   </p>
-                  <p className="text-sm text-blue-800 dark:text-blue-300">
-                    Ensure your card is activated and has sufficient funds
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Your bank may have blocked the transaction for security reasons.
                   </p>
                 </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-white text-sm font-bold">3</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">
+                  3
                 </div>
                 <div>
-                  <p className="font-semibold text-blue-900 dark:text-blue-200">
-                    Try a Different Card
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    Try a Different Payment Method
                   </p>
-                  <p className="text-sm text-blue-800 dark:text-blue-300">
-                    Use an alternative payment method if available
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Use another card or payment method to complete your purchase.
                   </p>
                 </div>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={handleRetry}
-              className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/checkout"
+              className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
             >
               <RefreshCw className="w-5 h-5" />
               Try Again
-            </button>
-            
+            </Link>
             <Link
               to="/cart"
-              className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-center px-6 py-4 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+              className="inline-flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white px-8 py-4 rounded-lg font-semibold transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               Back to Cart
             </Link>
           </div>
+
+          {/* Amount Info */}
+          {amount && (
+            <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Amount: <strong className="text-gray-900 dark:text-white">${amount.toFixed(2)}</strong>
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Footer Links */}
-        <div className="text-center space-y-4">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Still having issues?{' '}
-            <Link to="/support" className="text-primary-600 dark:text-primary-400 hover:underline font-semibold">
-              Contact Support
-            </Link>
+        {/* Support Section */}
+        <div className="mt-8 text-center">
+          <p className="text-gray-600 dark:text-gray-400 mb-2">
+            Still having issues?
           </p>
-          
           <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            to="/support"
+            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
           >
-            <Home className="w-4 h-4" />
-            Back to Home
+            Contact Support
           </Link>
         </div>
       </div>
