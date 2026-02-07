@@ -2,174 +2,171 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import StripeCheckout from '../components/payment/StripeCheckout';
+import { ArrowLeft, ShoppingBag } from 'lucide-react';
 
-// Initialize Stripe with your publishable key
-// TODO: Replace with your actual Stripe publishable key
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_YOUR_KEY_HERE');
-
-
+// Load Stripe - use environment variable or test key
+const stripePromise = loadStripe(
+  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 
+  'pk_test_51QnmKSD6B2jjw9MevSMjT3zvCVvAkRWCqz6fD4tW7bNpvHPNGMLqMEy9oL9sZP3E6PqhKQOxAzgvWPzChDo9DWtH00i1YvDIAq'
+);
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
-  // Get payment data from navigation state
   const { clientSecret, totalAmount } = location.state || {};
 
   useEffect(() => {
-    // Redirect if no payment data
+    // Redirect if accessed directly without payment data
     if (!clientSecret || !totalAmount) {
-      navigate('/cart');
+      navigate('/checkout');
     }
   }, [clientSecret, totalAmount, navigate]);
 
-  if (!clientSecret) {
+  if (!clientSecret || !totalAmount) {
     return null;
   }
 
-  // Stripe Elements appearance customization
-  const appearance = {
-    theme: 'stripe',
-    variables: {
-      colorPrimary: '#0284c7',
-      colorBackground: '#ffffff',
-      colorText: '#1f2937',
-      colorDanger: '#ef4444',
-      fontFamily: 'Inter, system-ui, sans-serif',
-      spacingUnit: '4px',
-      borderRadius: '8px',
-    },
-  };
-
   const options = {
     clientSecret,
-    appearance,
+    appearance: {
+      theme: 'stripe',
+      variables: {
+        colorPrimary: '#0284c7',
+        colorBackground: '#ffffff',
+        colorText: '#1f2937',
+        colorDanger: '#ef4444',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        spacingUnit: '4px',
+        borderRadius: '8px',
+      },
+    },
   };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
-        <Link
-          to="/checkout"
-          className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Checkout
-        </Link>
-
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-full mb-4">
-            <ShoppingCart className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <div className="mb-8">
+          <Link
+            to="/checkout"
+            className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium mb-4"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Checkout
+          </Link>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Complete Your Payment
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            You're almost there! Enter your payment details to complete the purchase
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Securely pay for your order
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Payment Form */}
           <div className="lg:col-span-2">
             <Elements stripe={stripePromise} options={options}>
-              <StripeCheckout 
-                clientSecret={clientSecret} 
-                amount={totalAmount}
-              />
+              <StripeCheckout clientSecret={clientSecret} totalAmount={totalAmount} />
             </Elements>
           </div>
 
           {/* Order Summary Sidebar */}
-          <div className="lg:col-span-1">
+          <div>
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 sticky top-4">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                <ShoppingBag className="w-5 h-5" />
                 Order Summary
-              </h3>
-              
-              <div className="space-y-3 mb-6">
+              </h2>
+
+              <div className="space-y-4">
                 <div className="flex justify-between text-gray-700 dark:text-gray-300">
                   <span>Total Amount</span>
                   <span className="font-semibold">${totalAmount?.toFixed(2)}</span>
                 </div>
-                
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex justify-between text-lg font-bold text-gray-900 dark:text-white">
-                    <span>You Pay</span>
-                    <span className="text-primary-600 dark:text-primary-400">
-                      ${totalAmount?.toFixed(2)}
-                    </span>
+
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <div className="flex justify-between font-bold text-lg text-gray-900 dark:text-white">
+                    <span>Total to Pay</span>
+                    <span>${totalAmount?.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Security Badges */}
-              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
-                <h4 className="text-sm font-semibold text-green-900 dark:text-green-200 mb-3">
-                  Your payment is secure
-                </h4>
-                
-                <div className="space-y-2 text-xs text-green-800 dark:text-green-300">
-                  <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2L2 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
-                    </svg>
-                    <span>256-bit SSL encryption</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                    </svg>
-                    <span>PCI DSS compliant</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
-                    </svg>
-                    <span>Verified by Stripe</span>
-                  </div>
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                  <svg
+                    className="w-5 h-5 text-green-600 dark:text-green-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                    />
+                  </svg>
+                  <span>SSL encrypted payment</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                  <svg
+                    className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                  <span>PCI DSS compliant</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                  <svg
+                    className="w-5 h-5 text-purple-600 dark:text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                    />
+                  </svg>
+                  <span>100% secure checkout</span>
                 </div>
               </div>
 
               {/* Payment Methods */}
               <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-                  Accepted payment methods
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  We accept
                 </p>
-                
-                <div className="flex items-center gap-3 flex-wrap">
-                  <div className="w-12 h-8 bg-gray-100 dark:bg-gray-700 rounded flex items-center justify-center">
-                    <span className="text-xs font-bold text-gray-600 dark:text-gray-400">VISA</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-8 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                    <span className="text-xs font-bold text-blue-600">VISA</span>
                   </div>
-                  <div className="w-12 h-8 bg-gray-100 dark:bg-gray-700 rounded flex items-center justify-center">
-                    <span className="text-xs font-bold text-gray-600 dark:text-gray-400">MC</span>
+                  <div className="w-12 h-8 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                    <span className="text-xs font-bold text-red-600">MC</span>
                   </div>
-                  <div className="w-12 h-8 bg-gray-100 dark:bg-gray-700 rounded flex items-center justify-center">
-                    <span className="text-xs font-bold text-gray-600 dark:text-gray-400">AMEX</span>
+                  <div className="w-12 h-8 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                    <span className="text-xs font-bold text-blue-700">AMEX</span>
                   </div>
-                  <div className="w-12 h-8 bg-gray-100 dark:bg-gray-700 rounded flex items-center justify-center">
-                    <span className="text-xs font-bold text-gray-600 dark:text-gray-400">DISC</span>
+                  <div className="w-12 h-8 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                    <span className="text-xs font-bold text-orange-600">DISC</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Help Text */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Need help?{' '}
-            <Link to="/support" className="text-primary-600 dark:text-primary-400 hover:underline font-semibold">
-              Contact our support team
-            </Link>
-          </p>
         </div>
       </div>
     </div>
