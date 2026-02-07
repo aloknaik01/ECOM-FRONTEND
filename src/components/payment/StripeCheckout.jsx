@@ -1,30 +1,31 @@
 import { useState } from 'react';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { CreditCard, Lock } from 'lucide-react';
+import { useDispatch } from 'react-redux';
 import { clearCart } from '../../store/slices/cartSlice';
+import { clearPaymentIntent } from '../../store/slices/orderSlice';
+import { CreditCard, Lock, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const StripeCheckout = ({ clientSecret, amount }) => {
+const StripeCheckout = ({ clientSecret, totalAmount }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
   
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
+  const [cardComplete, setCardComplete] = useState(false);
 
-  const cardElementOptions = {
+  const CARD_ELEMENT_OPTIONS = {
     style: {
       base: {
         fontSize: '16px',
-        color: '#424770',
+        color: '#1f2937',
         '::placeholder': {
-          color: '#aab7c4',
+          color: '#9ca3af',
         },
-        iconColor: '#666EE8',
+        iconColor: '#0284c7',
       },
       invalid: {
         color: '#ef4444',
@@ -34,6 +35,11 @@ const StripeCheckout = ({ clientSecret, amount }) => {
     hidePostalCode: false,
   };
 
+  const handleCardChange = (event) => {
+    setCardComplete(event.complete);
+    setError(event.error ? event.error.message : null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,21 +47,20 @@ const StripeCheckout = ({ clientSecret, amount }) => {
       return;
     }
 
+    if (!cardComplete) {
+      setError('Please complete your card details');
+      return;
+    }
+
     setProcessing(true);
     setError(null);
 
     try {
-      const cardElement = elements.getElement(CardElement);
-
       const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
         clientSecret,
         {
           payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: user?.name || 'Guest',
-              email: user?.email || '',
-            },
+            card: elements.getElement(CardElement),
           },
         }
       );
@@ -68,17 +73,17 @@ const StripeCheckout = ({ clientSecret, amount }) => {
       }
 
       if (paymentIntent.status === 'succeeded') {
-        // Payment successful
-        toast.success('Payment successful!');
-        
-        // Clear cart
+        // Clear cart and payment intent
         dispatch(clearCart());
+        dispatch(clearPaymentIntent());
+        
+        toast.success('Payment successful!');
         
         // Redirect to success page
         navigate('/payment/success', { 
           state: { 
-            paymentIntent: paymentIntent.id,
-            amount: amount 
+            amount: totalAmount,
+            paymentIntentId: paymentIntent.id 
           } 
         });
       }
@@ -112,40 +117,48 @@ const StripeCheckout = ({ clientSecret, amount }) => {
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Card Information
           </label>
-          <div className="p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus-within:border-primary-500 dark:focus-within:border-primary-400 transition-colors bg-white dark:bg-gray-700">
-            <CardElement options={cardElementOptions} />
+          <div className="p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 transition-colors focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-500/20">
+            <CardElement
+              options={CARD_ELEMENT_OPTIONS}
+              onChange={handleCardChange}
+            />
           </div>
           {error && (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-              {error}
-            </p>
+            <div className="mt-2 flex items-center gap-2 text-red-600 dark:text-red-400 text-sm">
+              <AlertCircle className="w-4 h-4" />
+              <span>{error}</span>
+            </div>
           )}
         </div>
 
-        {/* Test Card Info */}
+        {/* Security Notice */}
         <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-          <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-2">
-            Test Card Information
-          </h4>
-          <div className="text-xs text-blue-800 dark:text-blue-300 space-y-1">
-            <p><strong>Card Number:</strong> 4242 4242 4242 4242</p>
-            <p><strong>Expiry:</strong> Any future date (e.g., 12/34)</p>
-            <p><strong>CVC:</strong> Any 3 digits (e.g., 123)</p>
-            <p><strong>ZIP:</strong> Any 5 digits (e.g., 12345)</p>
+          <div className="flex items-start gap-3">
+            <Lock className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+            <div className="text-sm text-blue-800 dark:text-blue-300">
+              <p className="font-semibold mb-1">Secure Payment</p>
+              <p>Your payment information is encrypted and secure. We never store your card details.</p>
+            </div>
           </div>
         </div>
 
-        {/* Security Badge */}
-        <div className="flex items-center justify-center gap-2 mb-6 text-sm text-gray-600 dark:text-gray-400">
-          <Lock className="w-4 h-4" />
-          <span>Secured by Stripe</span>
+        {/* Amount Display */}
+        <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+          <div className="flex items-center justify-between">
+            <span className="text-gray-700 dark:text-gray-300 font-medium">
+              Total Amount
+            </span>
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              ${totalAmount.toFixed(2)}
+            </span>
+          </div>
         </div>
 
-        {/* Pay Button */}
+        {/* Payment Button */}
         <button
           type="submit"
-          disabled={!stripe || processing}
-          className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!stripe || processing || !cardComplete}
+          className="w-full bg-primary-600 hover:bg-primary-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {processing ? (
             <>
@@ -169,30 +182,21 @@ const StripeCheckout = ({ clientSecret, amount }) => {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 ></path>
               </svg>
-              Processing...
+              Processing Payment...
             </>
           ) : (
             <>
               <Lock className="w-5 h-5" />
-              Pay ${amount.toFixed(2)}
+              Pay ${totalAmount.toFixed(2)}
             </>
           )}
         </button>
 
-        {/* Trust Indicators */}
-        <div className="mt-6 flex items-center justify-center gap-6 text-xs text-gray-500 dark:text-gray-400">
-          <div className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
-            </svg>
-            <span>256-bit SSL</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L2 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
-            </svg>
-            <span>PCI Compliant</span>
-          </div>
+        {/* Test Card Notice (for development) */}
+        <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+          <p className="text-xs text-yellow-800 dark:text-yellow-300">
+            <strong>Test Mode:</strong> Use card number 4242 4242 4242 4242 with any future expiry date and CVC
+          </p>
         </div>
       </form>
     </div>
