@@ -19,12 +19,17 @@ import Profile from './pages/Profile';
 import ProductDetail from './pages/ProductDetail';
 import Products from './pages/Products';
 import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
+// import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
-import PaymentSuccess from './pages/PaymentSuccess';
+// import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentFailed from './pages/PaymentFailed';
-import Orders from './pages/Orders';
+// import Orders from './pages/Orders';
 import OrderDetail from './pages/OrderDetail';
+
+import PaymentSuccess from './components/PaymentSuccess'
+import Orders from './components/Orders'
+import Checkout from './components/Checkout-NoPayment';
+// import Checkout from './components/Checkout-NoPayment';
 
 function App() {
   const dispatch = useDispatch();
@@ -126,6 +131,7 @@ function App() {
             path="/checkout"
             element={
               <ProtectedRoute>
+                {/* <Checkout /> */}
                 <Checkout />
               </ProtectedRoute>
             }
@@ -142,7 +148,8 @@ function App() {
             path="/payment/success"
             element={
               <ProtectedRoute>
-                <PaymentSuccess />
+                {/* <PaymentSuccess /> */}
+                <PaymentSuccess/>
               </ProtectedRoute>
             }
           />
@@ -158,6 +165,7 @@ function App() {
             path="/orders"
             element={
               <ProtectedRoute>
+                {/* <Orders /> */}
                 <Orders />
               </ProtectedRoute>
             }
