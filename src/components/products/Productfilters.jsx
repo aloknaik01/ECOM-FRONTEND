@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, X, Star } from 'lucide-react';
 import { productAPI } from '../../utils/api';
 
 const ProductFilters = ({ filters, onFilterChange }) => {
@@ -88,11 +88,13 @@ const ProductFilters = ({ filters, onFilterChange }) => {
     { label: 'Over $200', min: 200, max: 10000 },
   ];
 
+  const ratings = [5, 4, 3, 2, 1];
+
   const FilterSection = ({ title, sectionKey, children }) => (
-    <div className="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
+    <div className="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4 last:border-b-0">
       <button
         onClick={() => toggleSection(sectionKey)}
-        className="flex items-center justify-between w-full text-left font-semibold text-gray-900 dark:text-white mb-3"
+        className="flex items-center justify-between w-full text-left font-semibold text-gray-900 dark:text-white mb-3 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
       >
         {title}
         {expandedSections[sectionKey] ? (
@@ -101,7 +103,7 @@ const ProductFilters = ({ filters, onFilterChange }) => {
           <ChevronDown className="w-4 h-4" />
         )}
       </button>
-      {expandedSections[sectionKey] && children}
+      {expandedSections[sectionKey] && <div>{children}</div>}
     </div>
   );
 
@@ -109,11 +111,11 @@ const ProductFilters = ({ filters, onFilterChange }) => {
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 sticky top-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Filters</h3>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Filters</h2>
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium flex items-center gap-1"
+            className="flex items-center gap-1 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
           >
             <X className="w-4 h-4" />
             Clear all
@@ -122,22 +124,25 @@ const ProductFilters = ({ filters, onFilterChange }) => {
       </div>
 
       {/* Category Filter */}
-      <FilterSection title="Category" sectionKey="category">
-        <div className="space-y-2">
+      <FilterSection title="Categories" sectionKey="category">
+        <div className="space-y-2 max-h-64 overflow-y-auto">
           {categories.map((cat) => (
             <label
               key={cat.category}
-              className="flex items-center gap-3 cursor-pointer group"
+              className="flex items-center justify-between gap-3 cursor-pointer group py-1"
             >
-              <input
-                type="checkbox"
-                checked={filters.category === cat.category}
-                onChange={() => handleCategoryChange(cat.category)}
-                className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-              />
-              <span className="flex-1 text-sm text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                {cat.category}
-              </span>
+              <div className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="category"
+                  checked={filters.category === cat.category}
+                  onChange={() => handleCategoryChange(cat.category)}
+                  className="w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                  {cat.category}
+                </span>
+              </div>
               <span className="text-xs text-gray-400">({cat.product_count})</span>
             </label>
           ))}
@@ -182,17 +187,17 @@ const ProductFilters = ({ filters, onFilterChange }) => {
               placeholder="Min"
               value={filters.minPrice}
               onChange={(e) =>
-                onFilterChange({ ...filters, minPrice: e.target.value })
+                onFilterChange({ ...filters, minPrice: e.target.value, maxPrice: '' })
               }
               className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             />
-            <span className="text-gray-400">-</span>
+            <span className="text-gray-500">-</span>
             <input
               type="number"
               placeholder="Max"
               value={filters.maxPrice}
               onChange={(e) =>
-                onFilterChange({ ...filters, maxPrice: e.target.value })
+                onFilterChange({ ...filters, maxPrice: e.target.value, minPrice: '' })
               }
               className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             />
@@ -201,9 +206,9 @@ const ProductFilters = ({ filters, onFilterChange }) => {
       </FilterSection>
 
       {/* Rating Filter */}
-      <FilterSection title="Customer Rating" sectionKey="rating">
+      <FilterSection title="Customer Ratings" sectionKey="rating">
         <div className="space-y-2">
-          {[5, 4, 3, 2, 1].map((rating) => (
+          {ratings.map((rating) => (
             <label
               key={rating}
               className="flex items-center gap-3 cursor-pointer group"
@@ -217,7 +222,7 @@ const ProductFilters = ({ filters, onFilterChange }) => {
               />
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, index) => (
-                  <svg
+                  <Star
                     key={index}
                     className={`w-4 h-4 ${
                       index < rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'
@@ -226,7 +231,7 @@ const ProductFilters = ({ filters, onFilterChange }) => {
                     viewBox="0 0 20 20"
                   >
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
+                  </Star>
                 ))}
                 <span className="text-sm text-gray-700 dark:text-gray-300 ml-1">
                   & Up
