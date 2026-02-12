@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/products/ProductCard';
-import ProductFilters from '../components/products/ProductFilters';
-import ProductSort from '../components/products/ProductSort';
+import ProductFilters from '../components/products/Productfilters';
+import ProductSort from '../components/products/Productsort';
 import Pagination from '../components/ui/Pagination';
-import { Search, Grid, List, SlidersHorizontal } from 'lucide-react';
+import AISearch from '../components/products/AISearch';
+import { Search, Grid, List, SlidersHorizontal, X } from 'lucide-react';
 import { productAPI } from '../utils/api';
 import toast from 'react-hot-toast';
 
@@ -14,8 +15,9 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [totalProducts, setTotalProducts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid');
   const [showFilters, setShowFilters] = useState(true);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   
   const [filters, setFilters] = useState({
     search: searchParams.get('search') || '',
@@ -49,7 +51,7 @@ const Products = () => {
       setProducts(data.products);
       setTotalProducts(data.totalProducts);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || 'Failed to load products');
     } finally {
       setLoading(false);
     }
@@ -65,12 +67,36 @@ const Products = () => {
       if (value) params.set(key, value);
     });
     setSearchParams(params);
+    setMobileFiltersOpen(false);
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
     handleFilterChange({ ...filters });
   };
+
+  const clearAllFilters = () => {
+    const clearedFilters = {
+      search: '',
+      category: '',
+      minPrice: '',
+      maxPrice: '',
+      ratings: '',
+      availability: '',
+      sortBy: 'created_at',
+      sortOrder: 'desc',
+    };
+    setFilters(clearedFilters);
+    setSearchParams({});
+  };
+
+  const hasActiveFilters =
+    filters.category ||
+    filters.minPrice ||
+    filters.maxPrice ||
+    filters.ratings ||
+    filters.availability ||
+    filters.search;
 
   const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
@@ -81,19 +107,28 @@ const Products = () => {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             {/* Search Bar */}
-            <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
+            <form onSubmit={handleSearch} className="flex-1 w-full max-w-2xl">
               <div className="relative">
                 <input
                   type="text"
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   placeholder="Search products by name, description, or category..."
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
+                  className="w-full pl-12 pr-24 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                {filters.search && (
+                  <button
+                    type="button"
+                    onClick={() => setFilters({ ...filters, search: '' })}
+                    className="absolute right-20 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors"
+                  >
+                    <X className="w-4 h-4 text-gray-400" />
+                  </button>
+                )}
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors text-sm"
                 >
                   Search
                 </button>
@@ -101,10 +136,20 @@ const Products = () => {
             </form>
 
             {/* View Options */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full md:w-auto">
+              {/* Mobile Filter Toggle */}
+              <button
+                onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+                className="md:hidden flex-1 flex items-center justify-center gap-2 p-2 rounded-lg bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+              >
+                <SlidersHorizontal className="w-5 h-5" />
+                <span className="text-sm font-medium">Filters</span>
+              </button>
+
+              {/* Desktop Filter Toggle */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`hidden md:block p-2 rounded-lg transition-colors ${
                   showFilters
                     ? 'bg-primary-100 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400'
                     : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
@@ -112,6 +157,8 @@ const Products = () => {
               >
                 <SlidersHorizontal className="w-5 h-5" />
               </button>
+
+              {/* View Mode Toggle */}
               <div className="flex border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                 <button
                   onClick={() => setViewMode('grid')}
@@ -136,17 +183,85 @@ const Products = () => {
               </div>
             </div>
           </div>
+
+          {/* Active Filters Badge */}
+          {hasActiveFilters && (
+            <div className="mt-4 flex items-center gap-2 flex-wrap">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Active filters:</span>
+              {filters.search && (
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+                  Search: {filters.search}
+                </span>
+              )}
+              {filters.category && (
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+                  {filters.category}
+                </span>
+              )}
+              {(filters.minPrice || filters.maxPrice) && (
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+                  ${filters.minPrice || '0'} - ${filters.maxPrice || '∞'}
+                </span>
+              )}
+              {filters.ratings && (
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+                  {filters.ratings}+ Stars
+                </span>
+              )}
+              {filters.availability && (
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+                  {filters.availability === 'in-stock' && 'In Stock'}
+                  {filters.availability === 'limited' && 'Limited Stock'}
+                  {filters.availability === 'out-of-stock' && 'Out of Stock'}
+                </span>
+              )}
+              <button
+                onClick={clearAllFilters}
+                className="inline-flex items-center gap-1 px-3 py-1 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
+              >
+                <X className="w-3 h-3" />
+                Clear all
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex gap-6">
-          {/* Filters Sidebar */}
+          {/* Desktop Filters Sidebar */}
           {showFilters && (
-            <aside className="w-64 flex-shrink-0">
+            <aside className="hidden md:block w-64 flex-shrink-0">
               <ProductFilters
                 filters={filters}
                 onFilterChange={handleFilterChange}
               />
             </aside>
+          )}
+
+          {/* Mobile Filters Modal */}
+          {mobileFiltersOpen && (
+            <div className="fixed inset-0 z-50 md:hidden">
+              <div
+                className="absolute inset-0 bg-black/50"
+                onClick={() => setMobileFiltersOpen(false)}
+              />
+              <div className="absolute inset-y-0 left-0 w-80 max-w-full bg-white dark:bg-gray-800 shadow-xl overflow-y-auto">
+                <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
+                  <button
+                    onClick={() => setMobileFiltersOpen(false)}
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="p-4">
+                  <ProductFilters
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                  />
+                </div>
+              </div>
+            </div>
           )}
 
           {/* Main Content */}
@@ -158,7 +273,7 @@ const Products = () => {
                   Products
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {totalProducts} products found
+                  {totalProducts} {totalProducts === 1 ? 'product' : 'products'} found
                 </p>
               </div>
               <ProductSort
@@ -195,7 +310,7 @@ const Products = () => {
                 <div
                   className={
                     viewMode === 'grid'
-                      ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                      ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
                       : 'space-y-4'
                   }
                 >
@@ -234,19 +349,7 @@ const Products = () => {
                   Try adjusting your filters or search query
                 </p>
                 <button
-                  onClick={() => {
-                    setFilters({
-                      search: '',
-                      category: '',
-                      minPrice: '',
-                      maxPrice: '',
-                      ratings: '',
-                      availability: '',
-                      sortBy: 'created_at',
-                      sortOrder: 'desc',
-                    });
-                    setSearchParams({});
-                  }}
+                  onClick={clearAllFilters}
                   className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
                 >
                   Clear all filters
@@ -256,6 +359,9 @@ const Products = () => {
           </main>
         </div>
       </div>
+
+      {/* AI Search Component */}
+      <AISearch />
     </div>
   );
 };
