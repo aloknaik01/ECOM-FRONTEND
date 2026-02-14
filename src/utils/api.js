@@ -175,23 +175,71 @@ export const orderAPI = {
     apiClient('/order/orders/me', {
       method: 'GET',
     }),
+};
 
-  // Admin routes
-  admin: {
-    getAll: () =>
-      apiClient('/order/admin/getall', {
-        method: 'GET',
-      }),
+//ADMIN API
+export const adminAPI = {
+  // Dashboard Stats
+  getDashboardStats: () =>
+    apiClient('/admin/fetch/dashboard-stats', {
+      method: 'GET',
+    }),
 
-    updateStatus: (orderId, status) =>
-      apiClient(`/order/admin/update/${orderId}`, {
-        method: 'PUT',
-        body: JSON.stringify({ status }),
-      }),
+  // Users Management
+  getAllUsers: () =>
+    apiClient('/admin/getallusers', {
+      method: 'GET',
+    }),
 
-    delete: (orderId) =>
-      apiClient(`/order/admin/delete/${orderId}`, {
-        method: 'DELETE',
-      }),
-  },
+  deleteUser: (userId) =>
+    apiClient(`/admin/delete/${userId}`, {
+      method: 'DELETE',
+    }),
+
+  // Products Management
+  getAllProducts: (params) =>
+    apiClient(`/product/admin/all${params ? '?' + params : ''}`, {
+      method: 'GET',
+    }),
+
+  getProductStats: () =>
+    apiClient('/product/admin/statistics', {
+      method: 'GET',
+    }),
+
+  createProduct: (formData) =>
+    apiClient('/product/admin/create', {
+      method: 'POST',
+      body: formData,
+      isFormData: true,
+    }),
+
+  updateProduct: (productId, formData) =>
+    apiClient(`/product/admin/update/${productId}`, {
+      method: 'PUT',
+      body: formData,
+      isFormData: true,
+    }),
+
+  deleteProduct: (productId) =>
+    apiClient(`/product/admin/delete/${productId}`, {
+      method: 'DELETE',
+    }),
+
+  // Orders Management
+  getAllOrders: () =>
+    apiClient('/order/admin/getall', {
+      method: 'GET',
+    }),
+
+  updateOrderStatus: (orderId, status) =>
+    apiClient(`/order/admin/update/${orderId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    }),
+
+  deleteOrder: (orderId) =>
+    apiClient(`/order/admin/delete/${orderId}`, {
+      method: 'DELETE',
+    }),
 };
