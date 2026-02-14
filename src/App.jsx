@@ -29,6 +29,11 @@ import OrderDetail from './pages/OrderDetail';
 import PaymentSuccess from './components/PaymentSuccess'
 import Orders from './components/Orders'
 import Checkout from './components/Checkout-NoPayment';
+import Dashboard from './components/admin/Dashboard';
+import AdminProducts from './components/admin/AdminProducts';
+import AdminOrders from './components/admin/AdminOrders';
+import AdminUsers from './components/admin/AdminUsers';
+import AdminAnalytics from './components/admin/AdminAnalytics';
 // import Checkout from './components/Checkout-NoPayment';
 
 function App() {
@@ -178,6 +183,26 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+
+{/* Admin Routes */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="products/create" element={<CreateProduct />} />
+            <Route path="products/edit/:id" element={<EditProduct />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
+          </Route>
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
