@@ -243,3 +243,37 @@ export const adminAPI = {
       method: 'DELETE',
     }),
 };
+
+
+// ── WISHLIST API
+export const wishlistAPI = {
+  // Get user's wishlist
+  getWishlist: () =>
+    apiClient('/wishlist', {
+      method: 'GET',
+    }),
+
+  // Add product to wishlist
+  addToWishlist: (productId) =>
+    apiClient(`/wishlist/add/${productId}`, {
+      method: 'POST',
+    }),
+
+  // Remove product from wishlist
+  removeFromWishlist: (productId) =>
+    apiClient(`/wishlist/remove/${productId}`, {
+      method: 'DELETE',
+    }),
+
+  // Clear entire wishlist
+  clearWishlist: () =>
+    apiClient('/wishlist/clear', {
+      method: 'DELETE',
+    }),
+
+  // Check if product is in wishlist
+  checkInWishlist: (productId) =>
+    apiClient(`/wishlist/check/${productId}`, {
+      method: 'GET',
+    }),
+};
