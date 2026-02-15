@@ -10,10 +10,15 @@ import {
 } from 'lucide-react';
 import { adminAPI } from '../../utils/api';
 import toast from 'react-hot-toast';
+import SalesChart from '../../components/admin/charts/SalesChart';
+import OrderStatusChart from '../../components/admin/charts/OrderStatusChart';
+import RevenueComparisonChart from '../../components/admin/charts/RevenueComparisonChart';
+import CategoryDistributionChart from '../../components/admin/charts/CategoryDistributionChart';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [chartType, setChartType] = useState('line');
 
   useEffect(() => {
     fetchDashboardStats();
@@ -260,20 +265,64 @@ const Dashboard = () => {
 
       {/* Monthly Sales Chart Placeholder */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Monthly Sales Trend
-        </h3>
-        <div className="h-64 flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg">
-          <div className="text-center">
-            <BarChart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 dark:text-gray-400">
-              Chart visualization would go here
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-              Use a library like recharts or chart.js for visualization
-            </p>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Monthly Sales Trend
+          </h3>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setChartType('line')}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                chartType === 'line'
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+              }`}
+            >
+              Line
+            </button>
+            <button
+              onClick={() => setChartType('area')}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                chartType === 'area'
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+              }`}
+            >
+              Area
+            </button>
           </div>
         </div>
+        <SalesChart data={stats?.monthlySales} type={chartType} />
+      </div>
+
+      {/* Revenue & Category Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Today vs Yesterday Revenue */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Revenue Comparison
+          </h3>
+          <RevenueComparisonChart 
+            todayRevenue={stats?.todayRevenue}
+            yesterdayRevenue={stats?.yesterdayRevenue}
+          />
+        </div>
+
+        {/* Category Distribution */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Sales by Category
+          </h3>
+          <CategoryDistributionChart topSellingProducts={stats?.topSellingProducts} />
+        </div>
+      </div>
+
+      {/* Order Status Chart */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Order Status Distribution
+        </h3>
+        <OrderStatusChart orderStatusCounts={stats?.orderStatusCounts} />
       </div>
     </div>
   );
