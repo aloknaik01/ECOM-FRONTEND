@@ -117,4 +117,4 @@ const AdminAnalytics = () => {
   );
 };
 
-export default AdminAnalytics;  
+export default AdminAnalytics;
