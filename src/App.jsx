@@ -37,6 +37,8 @@ import AdminAnalytics from './components/admin/AdminAnalytics';
 import AdminRoute from './components/auth/AdminRoute';
 import AdminLayout from './components/admin/AdminLayout';
 import Wishlist from './pages/Wishlist';
+import CreateProduct from './components/admin/CreateProduct';
+import EditProduct from './components/admin/EditProduct';
 // import Checkout from './components/Checkout-NoPayment';
 
 function App() {
