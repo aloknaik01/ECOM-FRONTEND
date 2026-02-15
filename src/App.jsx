@@ -34,6 +34,8 @@ import AdminProducts from './components/admin/AdminProducts';
 import AdminOrders from './components/admin/AdminOrders';
 import AdminUsers from './components/admin/AdminUsers';
 import AdminAnalytics from './components/admin/AdminAnalytics';
+import AdminRoute from './components/auth/AdminRoute';
+import AdminLayout from './components/admin/AdminLayout';
 // import Checkout from './components/Checkout-NoPayment';
 
 function App() {
