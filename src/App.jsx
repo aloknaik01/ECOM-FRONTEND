@@ -36,6 +36,7 @@ import AdminUsers from './components/admin/AdminUsers';
 import AdminAnalytics from './components/admin/AdminAnalytics';
 import AdminRoute from './components/auth/AdminRoute';
 import AdminLayout from './components/admin/AdminLayout';
+import Wishlist from './pages/Wishlist';
 // import Checkout from './components/Checkout-NoPayment';
 
 function App() {
@@ -79,7 +80,7 @@ function App() {
 
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {isAuthenticated && <Header />}
-        
+
         <Routes>
           {/* Public Routes */}
           <Route
@@ -134,6 +135,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/wishlist"
+            element={
+              <ProtectedRoute>
+                <Wishlist />
+              </ProtectedRoute>
+            }
+          />
+
+
           <Route
             path="/checkout"
             element={
@@ -156,7 +168,7 @@ function App() {
             element={
               <ProtectedRoute>
                 {/* <PaymentSuccess /> */}
-                <PaymentSuccess/>
+                <PaymentSuccess />
               </ProtectedRoute>
             }
           />
@@ -187,7 +199,7 @@ function App() {
           />
 
 
-{/* Admin Routes */}
+          {/* Admin Routes */}
           <Route
             path="/admin"
             element={
