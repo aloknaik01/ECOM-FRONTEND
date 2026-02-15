@@ -321,3 +321,59 @@ export const couponAPI = {
       method: 'GET',
     }),
 };
+
+// ── VARIANT API
+export const variantAPI = {
+  // Admin: Variant Management
+  admin: {
+    add: (productId, formData) =>
+      apiClient(`/variant/admin/add/${productId}`, {
+        method: 'POST',
+        body: formData,
+        isFormData: true,
+      }),
+
+    update: (variantId, formData) =>
+      apiClient(`/variant/admin/update/${variantId}`, {
+        method: 'PUT',
+        body: formData,
+        isFormData: true,
+      }),
+
+    delete: (variantId) =>
+      apiClient(`/variant/admin/delete/${variantId}`, {
+        method: 'DELETE',
+      }),
+
+    getAll: () =>
+      apiClient('/variant/admin/all', {
+        method: 'GET',
+      }),
+  },
+
+  // User: Browse Variants
+  getProductVariants: (productId) =>
+    apiClient(`/variant/product/${productId}`, {
+      method: 'GET',
+    }),
+
+  getVariantById: (variantId) =>
+    apiClient(`/variant/${variantId}`, {
+      method: 'GET',
+    }),
+
+  getSizes: (productId) =>
+    apiClient(`/variant/sizes/${productId}`, {
+      method: 'GET',
+    }),
+
+  getColors: (productId, size = null) =>
+    apiClient(`/variant/colors/${productId}${size ? `?size=${size}` : ''}`, {
+      method: 'GET',
+    }),
+
+  findVariant: (productId, params) =>
+    apiClient(`/variant/find/${productId}?${params}`, {
+      method: 'GET',
+    }),
+};
