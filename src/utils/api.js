@@ -20,7 +20,7 @@ export const apiClient = async (endpoint, options = {}) => {
   };
 
   // Remove Content-Type for FormData
-  if (options.body instanceof FormData) {
+  if (options.body instanceof FormData || options.isFormData) {
     delete config.headers['Content-Type'];
   }
 
@@ -41,8 +41,7 @@ export const apiClient = async (endpoint, options = {}) => {
   }
 };
 
-// ── AUTH 
-// API Methods
+// ── AUTH API
 export const authAPI = {
   register: (userData) => 
     apiClient('/auth/register', {
@@ -87,11 +86,12 @@ export const authAPI = {
   updateProfile: (formData) =>
     apiClient('/auth/profile/update', {
       method: 'PUT',
-      body: formData, // FormData for file upload
+      body: formData,
+      isFormData: true,
     }),
 };
 
-// ── PRODUCTS API 
+// ── PRODUCTS API
 export const productAPI = {
   // Public routes
   getAll: (params) =>
@@ -154,8 +154,7 @@ export const productAPI = {
     }),
 };
 
-
-// ── ORDERS API 
+// ── ORDERS API
 export const orderAPI = {
   // Place new order
   place: (orderData) =>
@@ -177,7 +176,7 @@ export const orderAPI = {
     }),
 };
 
-//ADMIN API
+// ── ADMIN API
 export const adminAPI = {
   // Dashboard Stats
   getDashboardStats: () =>
@@ -244,7 +243,6 @@ export const adminAPI = {
     }),
 };
 
-
 // ── WISHLIST API
 export const wishlistAPI = {
   // Get user's wishlist
@@ -274,6 +272,52 @@ export const wishlistAPI = {
   // Check if product is in wishlist
   checkInWishlist: (productId) =>
     apiClient(`/wishlist/check/${productId}`, {
+      method: 'GET',
+    }),
+};
+
+// ── COUPON API
+export const couponAPI = {
+  // Admin: Coupon Management
+  admin: {
+    create: (couponData) =>
+      apiClient('/coupon/admin/create', {
+        method: 'POST',
+        body: JSON.stringify(couponData),
+      }),
+
+    getAll: () =>
+      apiClient('/coupon/admin/all', {
+        method: 'GET',
+      }),
+
+    update: (couponId, couponData) =>
+      apiClient(`/coupon/admin/update/${couponId}`, {
+        method: 'PUT',
+        body: JSON.stringify(couponData),
+      }),
+
+    delete: (couponId) =>
+      apiClient(`/coupon/admin/delete/${couponId}`, {
+        method: 'DELETE',
+      }),
+  },
+
+  // User: Apply Coupons
+  validate: (data) =>
+    apiClient('/coupon/validate', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  recordUsage: (data) =>
+    apiClient('/coupon/record-usage', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  getAvailable: () =>
+    apiClient('/coupon/available', {
       method: 'GET',
     }),
 };
