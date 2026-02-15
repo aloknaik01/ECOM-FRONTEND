@@ -9,7 +9,8 @@ import {
   Menu, 
   X,
   LogOut,
-  Home
+  Home,
+  Ticket
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logoutUser } from '../../store/slices/authSlice';
@@ -25,6 +26,7 @@ const AdminLayout = () => {
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: Package },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+    { name: 'Coupons', href: '/admin/coupons', icon: Ticket },
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   ];
