@@ -9,6 +9,7 @@ const AISearch = () => {
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
+  const [filtersDetected, setFiltersDetected] = useState({});
   const [searchPerformed, setSearchPerformed] = useState(false);
 
   const examplePrompts = [
@@ -32,6 +33,7 @@ const AISearch = () => {
     try {
       const data = await productAPI.aiSearch(prompt);
       setResults(data.products || []);
+      setFiltersDetected(data.filtersDetected || {});
       
       if (!data.products || data.products.length === 0) {
         toast.info('No products found. Try a different search.');
@@ -53,6 +55,7 @@ const AISearch = () => {
   const handleClear = () => {
     setPrompt('');
     setResults([]);
+    setFiltersDetected({});
     setSearchPerformed(false);
   };
 
@@ -191,6 +194,15 @@ const AISearch = () => {
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                         Found {results.length} products
                       </h3>
+                      {Object.keys(filtersDetected).length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {Object.entries(filtersDetected).map(([key, val]) => (
+                            <span key={key} className="text-[10px] font-black uppercase tracking-widest bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 px-2 py-0.5 rounded border border-purple-200 dark:border-purple-800">
+                              {key}: {val}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {results.map((product) => (

@@ -2,12 +2,17 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMyOrders } from '../store/slices/orderSlice';
 import { Package, Truck, CheckCircle, XCircle, Clock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import { useState } from 'react';
+import ReviewModal from '../components/products/ReviewModal';
 
 const Orders = () => {
   const dispatch = useDispatch();
   const { myOrders, loading } = useSelector((state) => state.orders);
+  const navigate = useNavigate();
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     dispatch(fetchMyOrders());
@@ -183,12 +188,43 @@ const Orders = () => {
 
                   {/* View Details Button */}
                   <div className="mt-6">
-                    <Link
-                      to={`/order/${order.id}`}
-                      className="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
-                    >
-                      View Details
-                    </Link>
+                    <div className="flex flex-wrap gap-3">
+                      <Link
+                        to={`/order/${order.id}`}
+                        className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-6 py-2 rounded-lg font-semibold transition-colors"
+                      >
+                        View Details
+                      </Link>
+                      
+                      {order.order_status === 'Delivered' && (
+                        <>
+                          <button
+                            onClick={() => navigate(`/return-request/${order.id}`)}
+                            className="border-2 border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-2 rounded-lg font-semibold transition-colors"
+                          >
+                            Return Items
+                          </button>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Quick Review Buttons for each item in delivered order */}
+                    {order.order_status === 'Delivered' && (
+                       <div className="mt-4 flex gap-4 overflow-x-auto pb-2">
+                          {order.order_items.map(item => (
+                             <button 
+                               key={item.product_id}
+                               onClick={() => {
+                                 setSelectedProduct({ id: item.product_id, name: item.title });
+                                 setIsReviewOpen(true);
+                               }}
+                               className="flex-shrink-0 text-xs font-bold text-primary-600 bg-primary-50 dark:bg-primary-900/20 px-3 py-1.5 rounded-full hover:bg-primary-100 transition-colors"
+                             >
+                               Review {item.title.slice(0, 15)}...
+                             </button>
+                          ))}
+                       </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -196,6 +232,15 @@ const Orders = () => {
           </div>
         )}
       </div>
+
+      {selectedProduct && (
+        <ReviewModal 
+          isOpen={isReviewOpen}
+          onClose={() => setIsReviewOpen(false)}
+          productId={selectedProduct.id}
+          productName={selectedProduct.name}
+        />
+      )}
     </div>
   );
 };

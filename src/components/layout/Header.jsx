@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../store/slices/authSlice';
 import { useTheme } from '../../context/ThemeContext';
 import { useState } from 'react';
-import { ShoppingBag, Moon, Sun, User, LogOut, ShoppingCart, Heart } from 'lucide-react';
+import { ShoppingBag, Moon, Sun, User, LogOut, ShoppingCart, Heart, MapPin, RefreshCw } from 'lucide-react';
 import CartDrawer from '../cart/CartDrawer';
 
 const Header = () => {
@@ -11,6 +11,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { items: cartItems } = useSelector((state) => state.cart);
+  const { items: wishlistItems } = useSelector((state) => state.wishlist);
   const { theme, toggleTheme } = useTheme();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
@@ -75,12 +76,17 @@ const Header = () => {
               </button>
 
               {/* Wishlist */}
-              <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors relative">
+              <Link 
+                to="/wishlist" 
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors relative"
+              >
                 <Heart className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-                <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  0
-                </span>
-              </button>
+                {wishlistItems?.length > 0 && (
+                  <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    {wishlistItems.length}
+                  </span>
+                )}
+              </Link>
 
               {/* Cart */}
               <button 
@@ -160,6 +166,22 @@ const Header = () => {
                       >
                         <ShoppingBag className="w-4 h-4" />
                         My Orders
+                      </Link>
+                      <Link
+                        to="/addresses"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      >
+                        <MapPin className="w-4 h-4" />
+                        Address Book
+                      </Link>
+                      <Link
+                        to="/returns"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                        Returns & Refunds
                       </Link>
                       {user?.role === 'Admin' && (
                         <Link

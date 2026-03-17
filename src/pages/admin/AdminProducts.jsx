@@ -11,6 +11,7 @@ import {
 import { adminAPI } from '../../utils/api';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+import LucideIcon from '../../components/common/LucideIcon';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -191,11 +192,17 @@ const AdminProducts = () => {
                       >
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-3">
-                            <img
-                              src={product.images?.[0]?.url || '/placeholder.png'}
-                              alt={product.name}
-                              className="w-12 h-12 rounded-lg object-cover"
-                            />
+                            {product.images?.[0]?.url ? (
+                              <img
+                                src={product.images[0].url}
+                                alt={product.name}
+                                className="w-12 h-12 rounded-lg object-cover"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                <LucideIcon name={product.icon} className="w-6 h-6 text-gray-400" />
+                              </div>
+                            )}
                             <div>
                               <p className="font-medium text-gray-900 dark:text-white">
                                 {product.name}
@@ -222,7 +229,7 @@ const AdminProducts = () => {
                         </td>
                         <td className="py-4 px-6 text-center">
                           <span className="inline-flex items-center gap-1 text-yellow-500">
-                            ⭐ {product.ratings?.toFixed(1) || '0.0'}
+                            ⭐ {Number(product.ratings || 0).toFixed(1)}
                           </span>
                           <span className="text-xs text-gray-500 dark:text-gray-400 block">
                             ({product.review_count || 0} reviews)

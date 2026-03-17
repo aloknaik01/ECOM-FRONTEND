@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Heart, ShoppingCart, Star } from 'lucide-react';
+import { Star, ShoppingCart, Heart, Eye } from 'lucide-react';
+import LucideIcon from '../common/LucideIcon';
 import { Link } from 'react-router-dom';
 import { addToCart } from '../../store/slices/cartSlice';
 import toast from 'react-hot-toast';
@@ -48,14 +49,23 @@ const ProductCard = ({ product, showDiscount = false }) => {
           </div>
         )}
         
-        <img
-          src={product.images?.[0]?.url || product.image || '/placeholder.png'}
-          alt={product.name}
-          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          onLoad={() => setImageLoaded(true)}
-        />
+        {product.images?.[0]?.url || product.image ? (
+          <img
+            src={product.images?.[0]?.url || product.image}
+            alt={product.name}
+            className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+            onLoad={() => setImageLoaded(true)}
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+            <LucideIcon 
+              name={product.icon} 
+              className="w-16 h-16 text-gray-400 dark:text-gray-500" 
+              defaultIcon="Package"
+            />
+          </div>
+        )}
 
         {/* Stock Badge */}
         {product.stock === 0 && (
@@ -123,7 +133,7 @@ const ProductCard = ({ product, showDiscount = false }) => {
               />
             ))}
             <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
-              {(product.rating || product.ratings)?.toFixed(1)}
+              {Number(product.rating || product.ratings || 0).toFixed(1)}
             </span>
             {(product.reviews || product.review_count) && (
               <span className="text-xs text-gray-400">

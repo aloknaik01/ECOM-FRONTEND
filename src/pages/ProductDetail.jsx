@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ShoppingCart, Heart, Star, Truck, Shield, ArrowLeft } from 'lucide-react';
-import VariantSelector from '../components/product/VariantSelector';
+import LucideIcon from '../components/common/LucideIcon';
+import VariantSelector from '../components/products/VariantSelector';
 import { productAPI } from '../utils/api';
 import { addToCart } from '../store/slices/cartSlice';
 import { addToWishlist, removeFromWishlist } from '../store/slices/wishlistSlice';
@@ -12,8 +13,8 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  const { items: wishlistItems } = useSelector(state => state.wishlist);
+
+  const { items: wishlistItems = [] } = useSelector(state => state.wishlist || {});
   const isInWishlist = wishlistItems.some(item => item.id === id);
 
   const [product, setProduct] = useState(null);
@@ -30,7 +31,29 @@ const ProductDetail = () => {
     setLoading(true);
     try {
       const data = await productAPI.getById(id);
-      setProduct(data.product);
+      const prod = data.product;
+      setProduct(prod);
+
+      // --- Add to Recently Viewed ---
+      if (prod) {
+        try {
+          const stored = localStorage.getItem('recentlyViewed');
+          let history = stored ? JSON.parse(stored) : [];
+          history = history.filter(p => p.id !== prod.id); // remove duplicates
+          history.unshift({
+            id: prod.id,
+            name: prod.name,
+            price: prod.price,
+            rating: prod.ratings || 0,
+            image: prod.images && prod.images.length > 0 ? prod.images[0].url : '/placeholder.png'
+          });
+          if (history.length > 10) history = history.slice(0, 10);
+          localStorage.setItem('recentlyViewed', JSON.stringify(history));
+        } catch (err) {
+          console.error('Error saving recent history:', err);
+        }
+      }
+      // -----------------------------
     } catch (error) {
       toast.error('Failed to load product');
       navigate('/products');
@@ -87,8 +110,8 @@ const ProductDetail = () => {
 
   const displayPrice = selectedVariant ? selectedVariant.price : product.price;
   const displayStock = selectedVariant ? selectedVariant.stock : product.stock;
-  const images = selectedVariant?.images?.length > 0 
-    ? selectedVariant.images 
+  const images = selectedVariant?.images?.length > 0
+    ? selectedVariant.images
     : product.images || [];
 
   return (
@@ -108,11 +131,21 @@ const ProductDetail = () => {
           <div>
             {/* Main Image */}
             <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden mb-4">
-              <img
-                src={images[selectedImage]?.url || '/placeholder.png'}
-                alt={product.name}
-                className="w-full aspect-square object-cover"
-              />
+              {images.length > 0 ? (
+                <img
+                  src={images[selectedImage]?.url}
+                  alt={product.name}
+                  className="w-full aspect-square object-cover"
+                />
+              ) : (
+                <div className="w-full aspect-square bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                  <LucideIcon 
+                    name={product.icon} 
+                    className="w-32 h-32 text-gray-400 dark:text-gray-500" 
+                    defaultIcon="Package"
+                  />
+                </div>
+              )}
             </div>
 
             {/* Thumbnail Images */}
@@ -122,11 +155,10 @@ const ProductDetail = () => {
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    className={`bg-white dark:bg-gray-800 rounded-lg overflow-hidden border-2 transition-colors ${
-                      selectedImage === idx
+                    className={`bg-white dark:bg-gray-800 rounded-lg overflow-hidden border-2 transition-colors ${selectedImage === idx
                         ? 'border-primary-600'
                         : 'border-transparent'
-                    }`}
+                      }`}
                   >
                     <img
                       src={img.url}
@@ -151,11 +183,10 @@ const ProductDetail = () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-5 h-5 ${
-                        i < Math.floor(product.ratings || 0)
+                      className={`w-5 h-5 ${i < Math.floor(product.ratings || 0)
                           ? 'fill-yellow-400 text-yellow-400'
                           : 'text-gray-300 dark:text-gray-600'
-                      }`}
+                        }`}
                     />
                   ))}
                   <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">
@@ -170,13 +201,12 @@ const ProductDetail = () => {
               <span className="text-4xl font-bold text-gray-900 dark:text-white">
                 ${displayPrice}
               </span>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                displayStock > 10
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${displayStock > 10
                   ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                   : displayStock > 0
-                  ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-              }`}>
+                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                }`}>
                 {displayStock > 0 ? `${displayStock} in stock` : 'Out of stock'}
               </span>
             </div>
@@ -234,18 +264,16 @@ const ProductDetail = () => {
               </button>
               <button
                 onClick={handleWishlist}
-                className={`p-4 border-2 rounded-lg transition-colors ${
-                  isInWishlist
+                className={`p-4 border-2 rounded-lg transition-colors ${isInWishlist
                     ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
                     : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
-                }`}
+                  }`}
               >
                 <Heart
-                  className={`w-6 h-6 ${
-                    isInWishlist
+                  className={`w-6 h-6 ${isInWishlist
                       ? 'fill-red-500 text-red-500'
                       : 'text-gray-600 dark:text-gray-400'
-                  }`}
+                    }`}
                 />
               </button>
             </div>

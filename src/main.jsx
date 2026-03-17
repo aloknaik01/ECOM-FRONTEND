@@ -5,6 +5,7 @@ import { store } from './store/store.js';
 import App from './App.jsx';
 import './index.css';
 import { ThemeProvider } from './context/ThemeContext.jsx';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // Remove preload class after initial render to enable transitions
 window.addEventListener('load', () => {
@@ -13,9 +14,10 @@ window.addEventListener('load', () => {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
-
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || '12345-mock-client-id.apps.googleusercontent.com'}>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    </GoogleOAuthProvider>
   </Provider>
 );

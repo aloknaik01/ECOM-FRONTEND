@@ -7,16 +7,19 @@ import toast from 'react-hot-toast';
 const CreateProduct = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
     category: '',
     stock: '',
+    icon: '',
+    directImageUrl: '', // single input buffer
   });
 
   const [images, setImages] = useState([]);
+  const [directImageUrls, setDirectImageUrls] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [errors, setErrors] = useState({});
 
@@ -41,11 +44,18 @@ const CreateProduct = () => {
     }
   };
 
+  const handleAddDirectUrl = () => {
+    if (!formData.directImageUrl.trim()) return;
+    setDirectImageUrls(prev => [...prev, formData.directImageUrl.trim()]);
+    setImagePreviews(prev => [...prev, formData.directImageUrl.trim()]);
+    setFormData(prev => ({ ...prev, directImageUrl: '' }));
+  };
+
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    
-    if (files.length + images.length > 5) {
-      toast.error('Maximum 5 images allowed');
+
+    if (files.length + images.length + directImageUrls.length > 5) {
+      toast.error('Maximum 5 images allowed total');
       return;
     }
 
@@ -69,8 +79,26 @@ const CreateProduct = () => {
   };
 
   const removeImage = (index) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
+    // Determine if it was a file or a direct URL based on index tracking would be complex
+    // So let's re-calculate everything on removal
+    const fullList = [...directImageUrls, ...images.map(f => f.name || 'file')];
+    const itemToRemove = imagePreviews[index];
+
     setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    
+    // Check if it was a direct URL
+    if (directImageUrls.includes(itemToRemove)) {
+      setDirectImageUrls(prev => prev.filter(url => url !== itemToRemove));
+    } else {
+      // It was a file upload (this is a simplified logic, might need adjustment if multiple files have same name)
+      // Actually, since we use index, we should manage it more carefully
+      setImages(prev => {
+          const newFiles = [...prev];
+          // This is tricky because previews for files are base64
+          // Let's just reset and re-index
+          return prev.filter((_, i) => (i + directImageUrls.length) !== index);
+      });
+    }
   };
 
   const validate = () => {
@@ -81,7 +109,7 @@ const CreateProduct = () => {
     if (!formData.price || formData.price <= 0) newErrors.price = 'Valid price is required';
     if (!formData.category) newErrors.category = 'Category is required';
     if (!formData.stock || formData.stock < 0) newErrors.stock = 'Valid stock is required';
-    if (images.length === 0) newErrors.images = 'At least one image is required';
+    if (images.length === 0 && directImageUrls.length === 0) newErrors.images = 'At least one image or URL is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -93,22 +121,31 @@ const CreateProduct = () => {
     if (!validate()) return;
 
     setLoading(true);
-    
+
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name);
     formDataToSend.append('description', formData.description);
     formDataToSend.append('price', formData.price);
     formDataToSend.append('category', formData.category);
     formDataToSend.append('stock', formData.stock);
-    
+    formDataToSend.append('icon', formData.icon);
+
     images.forEach(image => {
       formDataToSend.append('images', image);
     });
 
+    directImageUrls.forEach(url => {
+        formDataToSend.append('directImageUrls[]', url);
+    });
+
     try {
-      await adminAPI.createProduct(formDataToSend);
-      toast.success('Product created successfully!');
-      navigate('/admin/products');
+      const response = await adminAPI.createProduct(formDataToSend);
+      toast.success('Product created! You can now add variants.');
+      if (response && response.product && response.product.id) {
+        navigate(`/admin/product/edit/${response.product.id}`);
+      } else {
+        navigate('/admin/products');
+      }
     } catch (error) {
       toast.error(error.message || 'Failed to create product');
     } finally {
@@ -150,9 +187,8 @@ const CreateProduct = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white ${
-                  errors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white ${errors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                  }`}
                 placeholder="Enter product name"
               />
               {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
@@ -168,17 +204,16 @@ const CreateProduct = () => {
                 value={formData.description}
                 onChange={handleChange}
                 rows={5}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white resize-none ${
-                  errors.description ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white resize-none ${errors.description ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                  }`}
                 placeholder="Describe your product in detail..."
               />
               {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
             </div>
 
             {/* Price and Stock Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Price ($) *
                 </label>
@@ -189,15 +224,14 @@ const CreateProduct = () => {
                   onChange={handleChange}
                   step="0.01"
                   min="0"
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white ${
-                    errors.price ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white ${errors.price ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                    }`}
                   placeholder="0.00"
                 />
                 {errors.price && <p className="mt-1 text-sm text-red-500">{errors.price}</p>}
               </div>
 
-              <div>
+              <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Stock *
                 </label>
@@ -207,15 +241,14 @@ const CreateProduct = () => {
                   value={formData.stock}
                   onChange={handleChange}
                   min="0"
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white ${
-                    errors.stock ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white ${errors.stock ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                    }`}
                   placeholder="0"
                 />
                 {errors.stock && <p className="mt-1 text-sm text-red-500">{errors.stock}</p>}
               </div>
 
-              <div>
+              <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Category *
                 </label>
@@ -223,9 +256,8 @@ const CreateProduct = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white ${
-                    errors.category ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white ${errors.category ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                    }`}
                 >
                   <option value="">Select category</option>
                   {categories.map(cat => (
@@ -233,6 +265,20 @@ const CreateProduct = () => {
                   ))}
                 </select>
                 {errors.category && <p className="mt-1 text-sm text-red-500">{errors.category}</p>}
+              </div>
+
+              <div className="md:col-span-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Icon (Lucide)
+                </label>
+                <input
+                  type="text"
+                  name="icon"
+                  value={formData.icon}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="e.g. Laptop, Smartphone"
+                />
               </div>
             </div>
           </div>
@@ -245,28 +291,54 @@ const CreateProduct = () => {
           </h2>
 
           {/* Image Upload */}
-          <div className="mb-4">
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <Upload className="w-10 h-10 text-gray-400 mb-2" />
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  <span className="font-semibold">Click to upload</span> or drag and drop
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  PNG, JPG or WEBP (MAX. 5MB, up to 5 images)
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Upload Files
+              </label>
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                    PNG, JPG or WEBP (MAX. 5MB)
+                  </p>
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                  className="hidden"
+                  disabled={imagePreviews.length >= 5}
+                />
+              </label>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Direct Image URL
+              </label>
+              <div className="flex gap-2 h-32 items-start">
+                <input
+                  type="text"
+                  name="directImageUrl"
+                  value={formData.directImageUrl}
+                  onChange={handleChange}
+                  className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="https://example.com/image.jpg"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddDirectUrl}
+                  disabled={imagePreviews.length >= 5 || !formData.directImageUrl}
+                  className="px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange}
-                className="hidden"
-                disabled={images.length >= 5}
-              />
-            </label>
-            {errors.images && <p className="mt-2 text-sm text-red-500">{errors.images}</p>}
+            </div>
           </div>
+          {errors.images && <p className="mt-2 text-sm text-red-500">{errors.images}</p>}
 
           {/* Image Previews */}
           {imagePreviews.length > 0 && (

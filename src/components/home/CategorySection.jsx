@@ -1,4 +1,5 @@
 import { ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import ProductCard from '../products/ProductCard';
 
 const CategorySection = ({ title, description, bgColor, products, image }) => {
@@ -28,24 +29,24 @@ const CategorySection = ({ title, description, bgColor, products, image }) => {
         <div className="flex-1 p-6 bg-white rounded-l-lg">
           <div className="grid grid-cols-4 gap-4">
             {products.map((product) => (
-              <div key={product.id} className="flex flex-col">
+              <Link to={`/product/${product.id}`} key={product.id} className="flex flex-col">
                 <div className="bg-gray-50 rounded-lg p-4 mb-3 aspect-square flex items-center justify-center overflow-hidden group cursor-pointer">
                   <img
-                    src={product.image}
+                    src={product.image || product.images?.[0]?.url || '/placeholder.png'}
                     alt={product.name}
                     className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                   />
                 </div>
                 <div>
-                  <p className="text-gray-700 text-sm mb-1 line-clamp-2">
+                  <p className="text-gray-700 text-sm mb-1 line-clamp-2 title-font">
                     {product.name}
                   </p>
                   <p className="text-gray-500 text-xs mb-1">From</p>
                   <p className="text-gray-900 font-bold">
-                    USD {product.price}
+                    ${Number(product.price).toFixed(2)}
                   </p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

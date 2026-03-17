@@ -4,42 +4,52 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 import { fetchUser } from './store/slices/authSlice';
 
-// Layout
+// Layout Components
 import Header from './components/layout/Header';
-import ProtectedRoute from './components/layout/ProtectedRoute';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import AdminRoute from './components/auth/AdminRoute';
 import PageLoader from './components/ui/PageLoader';
 
-// Pages
-import Home from './pages/Home';
+// Auth Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import Profile from './pages/Profile';
-import ProductDetail from './pages/ProductDetail';
-import Products from './pages/Products';
-import Cart from './pages/Cart';
-// import Checkout from './pages/Checkout';
-import Payment from './pages/Payment';
-// import PaymentSuccess from './pages/PaymentSuccess';
-import PaymentFailed from './pages/PaymentFailed';
-// import Orders from './pages/Orders';
-import OrderDetail from './pages/OrderDetail';
 
-import PaymentSuccess from './components/PaymentSuccess'
-import Orders from './components/Orders'
-import Checkout from './components/Checkout-NoPayment';
-import Dashboard from './components/admin/Dashboard';
-import AdminProducts from './components/admin/AdminProducts';
-import AdminOrders from './components/admin/AdminOrders';
-import AdminUsers from './components/admin/AdminUsers';
-import AdminAnalytics from './components/admin/AdminAnalytics';
-import AdminRoute from './components/auth/AdminRoute';
-import AdminLayout from './components/admin/AdminLayout';
+// User Pages
+import Home from './pages/Home';
+import Products from './pages/Products';
+import ProductDetail from './pages/ProductDetail';
+import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
-import CreateProduct from './components/admin/CreateProduct';
-import EditProduct from './components/admin/EditProduct';
-// import Checkout from './components/Checkout-NoPayment';
+import Checkout from './pages/Checkout';
+import Payment from './pages/Payment';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailed from './pages/PaymentFailed';
+import Orders from './pages/Orders';
+import OrderDetail from './pages/OrderDetail';
+import Profile from './pages/Profile';
+
+import VendorStore from './pages/vendor/VendorStore';
+import VendorRegistration from './pages/vendor/VendorRegistration';
+import VendorDashboard from './pages/vendor/VendorDashboard';
+
+import AddressBook from './pages/AddressBook';
+import Returns from './pages/Returns';
+import ReturnRequest from './pages/ReturnRequest';
+
+// Admin Components
+import AdminLayout from './components/admin/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import AdminProducts from './pages/admin/AdminProducts';
+import CreateProduct from './pages/admin/CreateProduct';
+import EditProduct from './pages/admin/EditProduct';
+import AdminOrders from './pages/admin/AdminOrders';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminCoupons from './pages/admin/AdminCoupons';
+import AdminVendors from './pages/admin/AdminVendors';
+import AdminPayouts from './pages/admin/AdminPayouts';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
 
 function App() {
   const dispatch = useDispatch();
@@ -96,7 +106,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/password/reset/:token" element={<ResetPassword />} />
 
-          {/* Protected Routes */}
+          {/* Protected User Routes */}
           <Route
             path="/"
             element={
@@ -110,6 +120,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vendor/register"
+            element={
+              <ProtectedRoute>
+                <VendorRegistration />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vendor/dashboard"
+            element={
+              <ProtectedRoute>
+                <VendorDashboard />
               </ProtectedRoute>
             }
           />
@@ -130,6 +156,12 @@ function App() {
             }
           />
           <Route
+            path="/store/:vendorId"
+            element={
+              <VendorStore />
+            }
+          />
+          <Route
             path="/cart"
             element={
               <ProtectedRoute>
@@ -137,7 +169,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/wishlist"
             element={
@@ -146,13 +177,10 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-
           <Route
             path="/checkout"
             element={
               <ProtectedRoute>
-                {/* <Checkout /> */}
                 <Checkout />
               </ProtectedRoute>
             }
@@ -169,7 +197,6 @@ function App() {
             path="/payment/success"
             element={
               <ProtectedRoute>
-                {/* <PaymentSuccess /> */}
                 <PaymentSuccess />
               </ProtectedRoute>
             }
@@ -186,7 +213,6 @@ function App() {
             path="/orders"
             element={
               <ProtectedRoute>
-                {/* <Orders /> */}
                 <Orders />
               </ProtectedRoute>
             }
@@ -199,7 +225,30 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="/addresses"
+            element={
+              <ProtectedRoute>
+                <AddressBook />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/returns"
+            element={
+              <ProtectedRoute>
+                <Returns />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/return-request/:orderId"
+            element={
+              <ProtectedRoute>
+                <ReturnRequest />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Admin Routes */}
           <Route
@@ -216,6 +265,9 @@ function App() {
             <Route path="products/create" element={<CreateProduct />} />
             <Route path="products/edit/:id" element={<EditProduct />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="coupons" element={<AdminCoupons />} />
+            <Route path="vendors" element={<AdminVendors />} />
+            <Route path="payouts" element={<AdminPayouts />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="analytics" element={<AdminAnalytics />} />
           </Route>

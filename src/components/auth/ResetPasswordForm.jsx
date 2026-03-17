@@ -109,7 +109,7 @@ const ResetPasswordForm = () => {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4 py-12 transition-colors duration-200">
+    <div className="w-full max-w-md py-12 transition-colors duration-200">
       {/* Theme Toggle Button */}
       <button
         onClick={toggleTheme}
@@ -123,7 +123,7 @@ const ResetPasswordForm = () => {
         )}
       </button>
 
-      <div className="w-full max-w-md">
+      <div>
         {/* Logo & Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-2xl mb-4 shadow-lg">

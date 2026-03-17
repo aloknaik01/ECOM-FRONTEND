@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, CreditCard, Package, ArrowRight } from 'lucide-react';
 import CouponInput from '../components/checkout/CouponInput';
-import { orderAPI, couponAPI } from '../utils/api';
+import { orderAPI, couponAPI, addressAPI } from '../utils/api';
 import toast from 'react-hot-toast';
 import { clearCart } from '../store/slices/cartSlice';
 
@@ -24,6 +24,9 @@ const Checkout = () => {
     pincode: ''
   });
 
+  const [addresses, setAddresses] = useState([]);
+  const [showAddressList, setShowAddressList] = useState(false);
+
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [discount, setDiscount] = useState(0);
 
@@ -33,6 +36,45 @@ const Checkout = () => {
   const tax = subtotal * taxRate;
   const shipping = subtotal > 100 ? 0 : 10; // Free shipping over $100
   const total = subtotal + tax + shipping - discount;
+
+  useEffect(() => {
+    fetchSavedAddresses();
+  }, []);
+
+  const fetchSavedAddresses = async () => {
+    try {
+      const data = await addressAPI.getAll();
+      setAddresses(data.addresses || []);
+      // Auto-select default if available
+      const def = data.addresses?.find(a => a.is_default);
+      if (def) {
+        setShippingInfo({
+          full_name: def.full_name,
+          phone: def.phone,
+          address: def.address,
+          city: def.city,
+          state: def.state,
+          country: def.country,
+          pincode: def.pincode
+        });
+      }
+    } catch (err) {
+      console.log("Failed to fetch addresses");
+    }
+  };
+
+  const handleSelectAddress = (addr) => {
+    setShippingInfo({
+      full_name: addr.full_name,
+      phone: addr.phone,
+      address: addr.address,
+      city: addr.city,
+      state: addr.state,
+      country: addr.country,
+      pincode: addr.pincode
+    });
+    setShowAddressList(false);
+  };
 
   useEffect(() => {
     if (items.length === 0) {
@@ -137,9 +179,32 @@ const Checkout = () => {
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                   Shipping Information
                 </h2>
+                {addresses.length > 0 && (
+                   <button 
+                     onClick={() => setShowAddressList(!showAddressList)}
+                     className="ml-auto text-sm font-bold text-primary-600 bg-primary-50 dark:bg-primary-900/20 px-4 py-1.5 rounded-full"
+                   >
+                     {showAddressList ? 'Enter Manually' : 'Saved Addresses'}
+                   </button>
+                )}
               </div>
 
-              <div className="space-y-4">
+              {showAddressList ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                   {addresses.map(addr => (
+                      <div 
+                        key={addr.id}
+                        onClick={() => handleSelectAddress(addr)}
+                        className="p-4 border-2 border-gray-100 dark:border-gray-700 rounded-2xl cursor-pointer hover:border-primary-500 transition-all bg-gray-50/50 dark:bg-gray-900/20"
+                      >
+                         <p className="font-bold text-gray-900 dark:text-white">{addr.full_name}</p>
+                         <p className="text-sm text-gray-500 mt-1 line-clamp-2">{addr.address}</p>
+                         <p className="text-xs font-black text-primary-600 mt-2 uppercase tracking-tight">Select This</p>
+                      </div>
+                   ))}
+                </div>
+              ) : (
+                <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -240,7 +305,8 @@ const Checkout = () => {
                     />
                   </div>
                 </div>
-              </div>
+                </div>
+              )}
             </div>
 
             {/* Coupon Section */}

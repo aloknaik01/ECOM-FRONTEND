@@ -49,7 +49,7 @@ const ForgotPasswordForm = () => {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4 py-12 transition-colors duration-200">
+      <div className="w-full max-w-md py-12 transition-colors duration-200">
         {/* Theme Toggle Button */}
         <button
           onClick={toggleTheme}
@@ -63,7 +63,7 @@ const ForgotPasswordForm = () => {
           )}
         </button>
 
-        <div className="w-full max-w-md">
+        <div>
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center transition-colors duration-200">
             <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
@@ -100,7 +100,7 @@ const ForgotPasswordForm = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4 py-12 transition-colors duration-200">
+    <div className="w-full max-w-md py-12 transition-colors duration-200">
       {/* Theme Toggle Button */}
       <button
         onClick={toggleTheme}
@@ -114,7 +114,7 @@ const ForgotPasswordForm = () => {
         )}
       </button>
 
-      <div className="w-full max-w-md">
+      <div>
         {/* Logo & Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-2xl mb-4 shadow-lg">

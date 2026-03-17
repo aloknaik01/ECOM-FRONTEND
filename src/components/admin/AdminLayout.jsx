@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  BarChart3, 
-  Menu, 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  BarChart3,
+  Menu,
   X,
   LogOut,
   Home,
-  Ticket
+  Ticket,
+  Building2,
+  DollarSign
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logoutUser } from '../../store/slices/authSlice';
@@ -24,6 +26,8 @@ const AdminLayout = () => {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Vendors', href: '/admin/vendors', icon: Building2 },
+    { name: 'Payouts', href: '/admin/payouts', icon: DollarSign },
     { name: 'Products', href: '/admin/products', icon: Package },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { name: 'Coupons', href: '/admin/coupons', icon: Ticket },
@@ -50,9 +54,8 @@ const AdminLayout = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 lg:translate-x-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         {/* Logo */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-700">
@@ -81,11 +84,10 @@ const AdminLayout = () => {
                 key={item.name}
                 to={item.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  isActive(item.href)
-                    ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive(item.href)
+                  ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
               >
                 <Icon className="w-5 h-5" />
                 <span className="font-medium">{item.name}</span>
@@ -123,7 +125,7 @@ const AdminLayout = () => {
           >
             <Menu className="w-6 h-6" />
           </button>
-          
+
           <div className="flex-1 lg:ml-0 ml-4">
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">
               {navigation.find(item => isActive(item.href))?.name || 'Admin Panel'}

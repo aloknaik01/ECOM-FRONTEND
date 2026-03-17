@@ -11,6 +11,8 @@ const ProductReviews = ({ productId, reviews, onReviewSubmit }) => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
   const userReview = reviews.find((review) => review.reviewer?.id === user?.id);
@@ -31,7 +33,12 @@ const ProductReviews = ({ productId, reviews, onReviewSubmit }) => {
 
     setSubmitting(true);
     try {
-      await productAPI.postReview(productId, { rating, comment });
+      const formData = new FormData();
+      formData.append('rating', rating);
+      formData.append('comment', comment);
+      images.forEach(img => formData.append('images', img));
+
+      await productAPI.postReview(productId, formData, true); // true for isFormData
       toast.success(hasReviewed ? 'Review updated successfully' : 'Review submitted successfully');
       setShowReviewForm(false);
       setRating(0);
@@ -74,7 +81,7 @@ const ProductReviews = ({ productId, reviews, onReviewSubmit }) => {
 
   const ratingDistribution = getRatingDistribution();
   const averageRating = reviews.length > 0
-    ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+    ? reviews.reduce((sum, review) => sum + Number(review.rating), 0) / reviews.length
     : 0;
 
   return (
@@ -212,6 +219,46 @@ const ProductReviews = ({ productId, reviews, onReviewSubmit }) => {
             />
           </div>
 
+          {/* Photo Upload */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Photos (Max 5)
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {previews.map((url, i) => (
+                <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                  <img src={url} alt="Preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                        setImages(images.filter((_, idx) => idx !== i));
+                        setPreviews(previews.filter((_, idx) => idx !== i));
+                    }}
+                    className="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl hover:bg-red-600"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              {previews.length < 5 && (
+                <label className="w-16 h-16 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center cursor-pointer hover:border-primary-500 transition-colors">
+                  <span className="text-2xl text-gray-400">+</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files);
+                      setImages([...images, ...files]);
+                      setPreviews([...previews, ...files.map(f => URL.createObjectURL(f))]);
+                    }}
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+
           {/* Form Actions */}
           <div className="flex gap-3">
             <button
@@ -298,7 +345,7 @@ const ProductReviews = ({ productId, reviews, onReviewSubmit }) => {
                       />
                     ))}
                     <span className="text-sm text-gray-600 dark:text-gray-400 ml-1">
-                      {review.rating.toFixed(1)}
+                      {Number(review.rating).toFixed(1)}
                     </span>
                     {review.reviewer?.id === user?.id && (
                       <span className="ml-2 text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 px-2 py-1 rounded">
@@ -308,9 +355,24 @@ const ProductReviews = ({ productId, reviews, onReviewSubmit }) => {
                   </div>
 
                   {/* Comment */}
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                     {review.comment}
                   </p>
+
+                  {/* Review Images */}
+                  {review.images && review.images.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {review.images.map((img, i) => (
+                        <img
+                          key={i}
+                          src={img.url}
+                          alt={`Review ${i}`}
+                          className="w-20 h-20 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => window.open(img.url, '_blank')}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

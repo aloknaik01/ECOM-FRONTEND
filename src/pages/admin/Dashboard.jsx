@@ -9,6 +9,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { adminAPI } from '../../utils/api';
+import LucideIcon from '../../components/common/LucideIcon';
 import toast from 'react-hot-toast';
 import SalesChart from '../../components/admin/charts/SalesChart';
 import OrderStatusChart from '../../components/admin/charts/OrderStatusChart';
@@ -201,11 +202,17 @@ const Dashboard = () => {
                 >
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={product.image || '/placeholder.png'}
-                        alt={product.name}
-                        className="w-10 h-10 rounded-lg object-cover"
-                      />
+                      {product.image || product.images?.[0]?.url ? (
+                        <img
+                          src={product.image || product.images?.[0]?.url}
+                          alt={product.name}
+                          className="w-10 h-10 rounded-lg object-cover"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                          <LucideIcon name={product.icon} className="w-5 h-5 text-gray-400" />
+                        </div>
+                      )}
                       <span className="font-medium text-gray-900 dark:text-white">
                         {product.name}
                       </span>
@@ -216,7 +223,7 @@ const Dashboard = () => {
                   </td>
                   <td className="py-3 px-4 text-center">
                     <span className="inline-flex items-center gap-1 text-yellow-500">
-                      ⭐ {product.ratings?.toFixed(1) || '0.0'}
+                      ⭐ {Number(product.ratings || 0).toFixed(1)}
                     </span>
                   </td>
                   <td className="py-3 px-4 text-right font-semibold text-gray-900 dark:text-white">

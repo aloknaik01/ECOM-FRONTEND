@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const CartDrawer = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
-  const { items } = useSelector((state) => state.cart);
+  const { items = [] } = useSelector((state) => state.cart || {});
 
   const subtotal = items.reduce(
     (sum, item) => sum + Number(item.product.price) * item.quantity,

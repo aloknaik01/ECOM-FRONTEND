@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/products/ProductCard';
-import ProductFilters from '../components/products/Productfilters';
-import ProductSort from '../components/products/Productsort';
+import ProductFilters from '../components/products/ProductFilters';
+import ProductSort from '../components/products/ProductSort';
 import Pagination from '../components/ui/Pagination';
 import AISearch from '../components/products/AISearch';
 import { Search, Grid, List, SlidersHorizontal, X } from 'lucide-react';
@@ -18,7 +18,7 @@ const Products = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [showFilters, setShowFilters] = useState(true);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  
+
   const [filters, setFilters] = useState({
     search: searchParams.get('search') || '',
     category: searchParams.get('category') || '',
@@ -60,7 +60,7 @@ const Products = () => {
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
     setCurrentPage(1);
-    
+
     // Update URL params
     const params = new URLSearchParams();
     Object.entries(newFilters).forEach(([key, value]) => {
@@ -149,11 +149,10 @@ const Products = () => {
               {/* Desktop Filter Toggle */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`hidden md:block p-2 rounded-lg transition-colors ${
-                  showFilters
+                className={`hidden md:block p-2 rounded-lg transition-colors ${showFilters
                     ? 'bg-primary-100 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400'
                     : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
-                }`}
+                  }`}
               >
                 <SlidersHorizontal className="w-5 h-5" />
               </button>
@@ -162,21 +161,19 @@ const Products = () => {
               <div className="flex border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 transition-colors ${
-                    viewMode === 'grid'
+                  className={`p-2 transition-colors ${viewMode === 'grid'
                       ? 'bg-primary-600 text-white'
                       : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
+                    }`}
                 >
                   <Grid className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 transition-colors ${
-                    viewMode === 'list'
+                  className={`p-2 transition-colors ${viewMode === 'list'
                       ? 'bg-primary-600 text-white'
                       : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
+                    }`}
                 >
                   <List className="w-5 h-5" />
                 </button>

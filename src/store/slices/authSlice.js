@@ -31,6 +31,20 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const googleLoginUser = createAsyncThunk(
+  'auth/googleLogin',
+  async (credential, { rejectWithValue }) => {
+    try {
+      const data = await authAPI.googleLogin(credential);
+      toast.success(data.message || 'Login successful!');
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const logoutUser = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
@@ -125,6 +139,20 @@ const authSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Google Login
+      .addCase(googleLoginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(googleLoginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+      })
+      .addCase(googleLoginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

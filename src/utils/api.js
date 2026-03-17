@@ -9,9 +9,9 @@ export class ApiError extends Error {
 
 export const apiClient = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   const config = {
-    credentials: 'include', // Important for cookies
+    credentials: 'include', // for cookies
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -43,7 +43,7 @@ export const apiClient = async (endpoint, options = {}) => {
 
 // ── AUTH API
 export const authAPI = {
-  register: (userData) => 
+  register: (userData) =>
     apiClient('/auth/register', {
       method: 'POST',
       body: JSON.stringify(userData),
@@ -53,6 +53,12 @@ export const authAPI = {
     apiClient('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
+    }),
+
+  googleLogin: (credential) =>
+    apiClient('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ credential }),
     }),
 
   logout: () =>
@@ -377,3 +383,100 @@ export const variantAPI = {
       method: 'GET',
     }),
 };
+
+// ── VENDORS API
+export const vendorAPI = {
+  register: (formData) =>
+    apiClient('/vendor/register', {
+      method: 'POST',
+      body: formData,
+      isFormData: true,
+    }),
+
+  getProfile: () =>
+    apiClient('/vendor/me', {
+      method: 'GET',
+    }),
+
+  updateProfile: (formData) =>
+    apiClient('/vendor/update', {
+      method: 'PUT',
+      body: formData,
+      isFormData: true,
+    }),
+
+  getDashboardStats: () =>
+    apiClient('/vendor/dashboard-stats', {
+      method: 'GET',
+    }),
+
+  requestPayout: (amount) =>
+    apiClient('/vendor/request-payout', {
+      method: 'POST',
+      body: JSON.stringify({ amount }),
+    }),
+
+  getPayouts: () =>
+    apiClient('/vendor/payouts', {
+      method: 'GET',
+    }),
+
+  getStore: (vendorId) =>
+    apiClient(`/vendor/store/${vendorId}`, {
+      method: 'GET',
+    }),
+
+  admin: {
+    getAll: (params) =>
+      apiClient(`/vendor/admin/all${params ? '?' + params : ''}`, {
+        method: 'GET',
+      }),
+
+    getPayouts: () =>
+      apiClient('/vendor/admin/payouts', {
+        method: 'GET',
+      }),
+
+    updateStatus: (vendorId, status, commission_rate) =>
+      apiClient(`/vendor/admin/update-status/${vendorId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status, commission_rate }),
+      }),
+
+    processPayout: (payoutId, data) =>
+      apiClient(`/vendor/admin/process-payout/${payoutId}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }),
+  }
+};
+
+// ── FLASH SALE API ────────────────────────────────────────────────────────
+export const flashSaleAPI = {
+  getActive: () => apiClient('/flash-sale/active'),
+  getAllAdmin: () => apiClient('/flash-sale/admin/all'),
+  create: (data) => apiClient('/flash-sale/admin/create', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id, data) => apiClient(`/flash-sale/admin/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id) => apiClient(`/flash-sale/admin/${id}`, { method: 'DELETE' }),
+};
+
+// ── ADDRESS API ───────────────────────────────────────────────────────────
+export const addressAPI = {
+  getAll: () => apiClient('/address'),
+  add: (data) => apiClient('/address', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id, data) => apiClient(`/address/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id) => apiClient(`/address/${id}`, { method: 'DELETE' }),
+  setDefault: (id) => apiClient(`/address/${id}/default`, { method: 'PUT' }),
+};
+
+// ── RETURN API ────────────────────────────────────────────────────────────
+export const returnAPI = {
+  create: (data, isFormData = false) => apiClient('/return', { 
+    method: 'POST', 
+    body: isFormData ? data : JSON.stringify(data),
+    isFormData 
+  }),
+  getMy: () => apiClient('/return/my'),
+  getAllAdmin: (status) => apiClient(`/return/admin/all${status ? `?status=${status}` : ''}`),
+  updateStatus: (id, data) => apiClient(`/return/admin/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+};
