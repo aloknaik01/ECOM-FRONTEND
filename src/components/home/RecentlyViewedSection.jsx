@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import ProductCard from '../products/ProductCard';
 
+const STORAGE_KEY = 'recently_viewed_products';
+
 const RecentlyViewedSection = () => {
     const [recentProducts, setRecentProducts] = useState([]);
 
     useEffect(() => {
         try {
-            const stored = localStorage.getItem('recentlyViewed');
+            // Clear old stale key if it exists
+            localStorage.removeItem('recentlyViewed');
+
+            const stored = localStorage.getItem(STORAGE_KEY);
             if (stored) {
                 setRecentProducts(JSON.parse(stored));
             }

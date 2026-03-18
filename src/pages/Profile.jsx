@@ -4,9 +4,51 @@ import UpdateProfile from '../components/profile/UpdateProfile';
 import UpdatePassword from '../components/profile/UpdatePassword';
 import { User, Lock } from 'lucide-react';
 
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logoutUser } from '../store/slices/authSlice';
+
 const Profile = () => {
   const { user } = useSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState('profile');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  if (!user) {
+    const handleLoginClick = async () => {
+      await dispatch(logoutUser());
+      navigate('/login');
+    };
+    
+    const handleRegisterClick = async () => {
+      await dispatch(logoutUser());
+      navigate('/register');
+    };
+
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="w-20 h-20 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+            <User className="w-10 h-10 text-primary-600 dark:text-primary-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            Authentication Issue
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
+            Your session appears to be invalid or expired. Please log in again to view your profile.
+          </p>
+          <div className="space-y-4">
+            <button onClick={handleLoginClick} className="block w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200">
+              Log In to Your Account
+            </button>
+            <button onClick={handleRegisterClick} className="block w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200">
+              Create New Account
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">

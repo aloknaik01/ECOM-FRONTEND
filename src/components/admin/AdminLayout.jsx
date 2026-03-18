@@ -60,9 +60,7 @@ const AdminLayout = () => {
         {/* Logo */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-              <LayoutDashboard className="w-5 h-5 text-white" />
-            </div>
+            <img src="/shopsphere.png" alt="ShopSphere" className="h-[30px] w-auto object-contain" />
             <span className="text-lg font-bold text-gray-900 dark:text-white">
               Admin Panel
             </span>

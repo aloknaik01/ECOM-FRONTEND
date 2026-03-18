@@ -140,8 +140,8 @@ const RegisterForm = () => {
       <div>
         {/* Logo & Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-2xl mb-4 shadow-lg">
-            <ShoppingBag className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <img src="/shopsphere.png" alt="ShopSphere" className="h-[80px] w-auto object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Create Account

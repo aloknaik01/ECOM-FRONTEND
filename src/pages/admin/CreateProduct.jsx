@@ -18,6 +18,7 @@ const CreateProduct = () => {
     directImageUrl: '', // single input buffer
   });
 
+  const [specifications, setSpecifications] = useState([{ title: '', description: '' }]);
   const [images, setImages] = useState([]);
   const [directImageUrls, setDirectImageUrls] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -51,6 +52,24 @@ const CreateProduct = () => {
     setFormData(prev => ({ ...prev, directImageUrl: '' }));
   };
 
+  const handleSpecChange = (index, field, value) => {
+    const newSpecs = [...specifications];
+    newSpecs[index][field] = value;
+    setSpecifications(newSpecs);
+  };
+
+  const addSpecField = () => {
+    setSpecifications([...specifications, { title: '', description: '' }]);
+  };
+
+  const removeSpecField = (index) => {
+    if (specifications.length > 1) {
+      setSpecifications(specifications.filter((_, i) => i !== index));
+    } else {
+      setSpecifications([{ title: '', description: '' }]);
+    }
+  };
+
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
 
@@ -79,25 +98,13 @@ const CreateProduct = () => {
   };
 
   const removeImage = (index) => {
-    // Determine if it was a file or a direct URL based on index tracking would be complex
-    // So let's re-calculate everything on removal
-    const fullList = [...directImageUrls, ...images.map(f => f.name || 'file')];
-    const itemToRemove = imagePreviews[index];
-
-    setImagePreviews(prev => prev.filter((_, i) => i !== index));
-    
-    // Check if it was a direct URL
-    if (directImageUrls.includes(itemToRemove)) {
-      setDirectImageUrls(prev => prev.filter(url => url !== itemToRemove));
+    if (index < directImageUrls.length) {
+      setDirectImageUrls(prev => prev.filter((_, i) => i !== index));
+      setImagePreviews(prev => prev.filter((_, i) => i !== index));
     } else {
-      // It was a file upload (this is a simplified logic, might need adjustment if multiple files have same name)
-      // Actually, since we use index, we should manage it more carefully
-      setImages(prev => {
-          const newFiles = [...prev];
-          // This is tricky because previews for files are base64
-          // Let's just reset and re-index
-          return prev.filter((_, i) => (i + directImageUrls.length) !== index);
-      });
+      const fileIndex = index - directImageUrls.length;
+      setImages(prev => prev.filter((_, i) => i !== fileIndex));
+      setImagePreviews(prev => prev.filter((_, i) => i !== index));
     }
   };
 
@@ -109,7 +116,8 @@ const CreateProduct = () => {
     if (!formData.price || formData.price <= 0) newErrors.price = 'Valid price is required';
     if (!formData.category) newErrors.category = 'Category is required';
     if (!formData.stock || formData.stock < 0) newErrors.stock = 'Valid stock is required';
-    if (images.length === 0 && directImageUrls.length === 0) newErrors.images = 'At least one image or URL is required';
+    const totalImages = images.length + directImageUrls.length;
+    if (totalImages === 0) newErrors.images = 'At least one image or icon is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -129,23 +137,36 @@ const CreateProduct = () => {
     formDataToSend.append('category', formData.category);
     formDataToSend.append('stock', formData.stock);
     formDataToSend.append('icon', formData.icon);
+    formDataToSend.append('specifications', JSON.stringify(specifications.filter(s => s.title.trim() || s.description.trim())));
 
     images.forEach(image => {
       formDataToSend.append('images', image);
     });
 
     directImageUrls.forEach(url => {
-        formDataToSend.append('directImageUrls[]', url);
+        formDataToSend.append('directImageUrls', url);
     });
 
     try {
-      const response = await adminAPI.createProduct(formDataToSend);
-      toast.success('Product created! You can now add variants.');
-      if (response && response.product && response.product.id) {
-        navigate(`/admin/product/edit/${response.product.id}`);
-      } else {
-        navigate('/admin/products');
-      }
+      await adminAPI.createProduct(formDataToSend);
+      toast.success('Product created successfully!');
+      
+      // Reset form to allow adding another product
+      setFormData({
+        name: '',
+        description: '',
+        price: '',
+        category: '',
+        stock: '',
+        icon: '',
+        directImageUrl: '',
+      });
+      setSpecifications([{ title: '', description: '' }]);
+      setImages([]);
+      setDirectImageUrls([]);
+      setImagePreviews([]);
+      setErrors({});
+      
     } catch (error) {
       toast.error(error.message || 'Failed to create product');
     } finally {
@@ -281,6 +302,55 @@ const CreateProduct = () => {
                 />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Specifications Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Product Specifications
+            </h2>
+            <button
+              type="button"
+              onClick={addSpecField}
+              className="flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700"
+            >
+              <Plus className="w-4 h-4" />
+              Add Specification
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {specifications.map((spec, index) => (
+              <div key={index} className="flex gap-3 items-start">
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Title (e.g. RAM)"
+                    value={spec.title}
+                    onChange={(e) => handleSpecChange(index, 'title', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                <div className="flex-[2]">
+                  <input
+                    type="text"
+                    placeholder="Description (e.g. 16GB)"
+                    value={spec.description}
+                    onChange={(e) => handleSpecChange(index, 'description', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeSpecField(index)}
+                  className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 

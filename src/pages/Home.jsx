@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import CategorySidebar from '../components/home/CategorySidebar';
 import HeroSection from '../components/home/HeroSection';
+import CategoryBar from '../components/home/CategoryBar';
 import CategorySection from '../components/home/CategorySection';
 import FlashSales from '../components/home/FlashSales';
 import RecommendedSection from '../components/home/RecommendedSection';
@@ -39,15 +40,11 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      <CategoryBar />
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <CategorySidebar />
-          </aside>
-
+        <div className="flex flex-col gap-6">
           {/* Main Content */}
-          <main className="flex-1 space-y-6">
+          <main className="w-full space-y-6">
             {/* Hero Section */}
             <HeroSection />
 

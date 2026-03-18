@@ -21,6 +21,7 @@ const EditProduct = () => {
     directImageUrl: '', // single input buffer
   });
 
+  const [specifications, setSpecifications] = useState([{ title: '', description: '' }]);
   const [existingImages, setExistingImages] = useState([]);
   const [newImages, setNewImages] = useState([]);
   const [directImageUrls, setDirectImageUrls] = useState([]);
@@ -59,6 +60,13 @@ const EditProduct = () => {
         directImageUrl: '',
       });
 
+      const specs = product.specifications;
+      if (specs && Array.isArray(specs) && specs.length > 0) {
+        setSpecifications(specs);
+      } else {
+        setSpecifications([{ title: '', description: '' }]);
+      }
+
       setExistingImages(product.images || []);
     } catch (error) {
       toast.error('Failed to load product');
@@ -73,6 +81,24 @@ const EditProduct = () => {
     setDirectImageUrls(prev => [...prev, formData.directImageUrl.trim()]);
     setNewImagePreviews(prev => [...prev, formData.directImageUrl.trim()]);
     setFormData(prev => ({ ...prev, directImageUrl: '' }));
+  };
+
+  const handleSpecChange = (index, field, value) => {
+    const newSpecs = [...specifications];
+    newSpecs[index][field] = value;
+    setSpecifications(newSpecs);
+  };
+
+  const addSpecField = () => {
+    setSpecifications([...specifications, { title: '', description: '' }]);
+  };
+
+  const removeSpecField = (index) => {
+    if (specifications.length > 1) {
+      setSpecifications(specifications.filter((_, i) => i !== index));
+    } else {
+      setSpecifications([{ title: '', description: '' }]);
+    }
   };
 
   const handleChange = (e) => {
@@ -116,13 +142,14 @@ const EditProduct = () => {
   };
 
   const removeNewImage = (index) => {
-    const itemToRemove = newImagePreviews[index];
-    setNewImagePreviews(prev => prev.filter((_, i) => i !== index));
-
-    if (directImageUrls.includes(itemToRemove)) {
-      setDirectImageUrls(prev => prev.filter(url => url !== itemToRemove));
+    if (index < directImageUrls.length) {
+      const urlToRemove = directImageUrls[index];
+      setDirectImageUrls(prev => prev.filter((_, i) => i !== index));
+      setNewImagePreviews(prev => prev.filter((_, i) => i !== index));
     } else {
-      setNewImages(prev => prev.filter((_, i) => (i + directImageUrls.length) !== index));
+      const fileIndex = index - directImageUrls.length;
+      setNewImages(prev => prev.filter((_, i) => i !== fileIndex));
+      setNewImagePreviews(prev => prev.filter((_, i) => i !== index));
     }
   };
 
@@ -135,8 +162,8 @@ const EditProduct = () => {
     if (!formData.category) newErrors.category = 'Category is required';
     if (!formData.stock || formData.stock < 0) newErrors.stock = 'Valid stock is required';
 
-    const totalImages = existingImages.length + newImages.length;
-    if (totalImages === 0) newErrors.images = 'At least one image is required';
+    const totalImages = existingImages.length + newImages.length + directImageUrls.length;
+    if (totalImages === 0) newErrors.images = 'At least one image or icon is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -156,6 +183,7 @@ const EditProduct = () => {
     formDataToSend.append('category', formData.category);
     formDataToSend.append('stock', formData.stock);
     formDataToSend.append('icon', formData.icon);
+    formDataToSend.append('specifications', JSON.stringify(specifications.filter(s => s.title.trim() || s.description.trim())));
 
     // If there are new images (files or URLs), replace all existing images
     if (newImages.length > 0 || directImageUrls.length > 0) {
@@ -163,7 +191,7 @@ const EditProduct = () => {
         formDataToSend.append('images', image);
       });
       directImageUrls.forEach(url => {
-        formDataToSend.append('directImageUrls[]', url);
+        formDataToSend.append('directImageUrls', url);
       });
     }
 
@@ -317,6 +345,55 @@ const EditProduct = () => {
           </div>
         </div>
 
+        {/* Specifications Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Product Specifications
+            </h2>
+            <button
+              type="button"
+              onClick={addSpecField}
+              className="flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700"
+            >
+              <Plus className="w-4 h-4" />
+              Add Specification
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {specifications.map((spec, index) => (
+              <div key={index} className="flex gap-3 items-start">
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Title (e.g. RAM)"
+                    value={spec.title}
+                    onChange={(e) => handleSpecChange(index, 'title', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                <div className="flex-[2]">
+                  <input
+                    type="text"
+                    placeholder="Description (e.g. 16GB)"
+                    value={spec.description}
+                    onChange={(e) => handleSpecChange(index, 'description', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeSpecField(index)}
+                  className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Images Card */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -435,7 +512,7 @@ const EditProduct = () => {
 
         {/* Variant Manager */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-          <VariantManager productId={id} />
+          <VariantManager productId={id} productPrice={formData.price} />
         </div>
 
         {/* Actions */}

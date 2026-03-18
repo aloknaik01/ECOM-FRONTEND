@@ -37,18 +37,19 @@ const ProductDetail = () => {
       // --- Add to Recently Viewed ---
       if (prod) {
         try {
-          const stored = localStorage.getItem('recentlyViewed');
-          let history = stored ? JSON.parse(stored) : [];
-          history = history.filter(p => p.id !== prod.id); // remove duplicates
-          history.unshift({
+          const STORAGE_KEY = 'recently_viewed_products';
+          let stored = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+          stored = stored.filter(p => p.id !== prod.id); // remove duplicates
+          stored.unshift({
             id: prod.id,
             name: prod.name,
             price: prod.price,
-            rating: prod.ratings || 0,
-            image: prod.images && prod.images.length > 0 ? prod.images[0].url : '/placeholder.png'
+            images: prod.images,
+            ratings: prod.ratings || 0,
+            category: prod.category
           });
-          if (history.length > 10) history = history.slice(0, 10);
-          localStorage.setItem('recentlyViewed', JSON.stringify(history));
+          if (stored.length > 8) stored = stored.slice(0, 8);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
         } catch (err) {
           console.error('Error saving recent history:', err);
         }
@@ -220,6 +221,32 @@ const ProductDetail = () => {
                 {product.description}
               </p>
             </div>
+
+            {/* Specifications */}
+            {product.specifications && product.specifications.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  Specifications
+                </h3>
+                <div className="grid grid-cols-1 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                  {product.specifications.map((spec, index) => (
+                    <div 
+                      key={index} 
+                      className={`flex border-b last:border-0 border-gray-200 dark:border-gray-700 ${
+                        index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-800/50'
+                      }`}
+                    >
+                      <div className="w-1/3 px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">
+                        {spec.title}
+                      </div>
+                      <div className="w-2/3 px-4 py-3 text-sm text-gray-900 dark:text-white">
+                        {spec.description}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Variant Selector */}
             <VariantSelector

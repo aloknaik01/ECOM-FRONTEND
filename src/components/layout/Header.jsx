@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../store/slices/authSlice';
 import { useTheme } from '../../context/ThemeContext';
 import { useState } from 'react';
-import { ShoppingBag, Moon, Sun, User, LogOut, ShoppingCart, Heart, MapPin, RefreshCw } from 'lucide-react';
+import { ShoppingBag, Moon, Sun, User, LogOut, ShoppingCart, Heart, MapPin, RefreshCw, Search } from 'lucide-react';
 import CartDrawer from '../cart/CartDrawer';
 
 const Header = () => {
@@ -15,6 +15,7 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -23,42 +24,35 @@ const Header = () => {
     navigate('/login');
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
+  };
+
   return (
     <>
       <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-40 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
-                <ShoppingBag className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900 dark:text-white">
-                E-Commerce
-              </span>
+            <Link to="/" className="flex items-center">
+              <img src="/shopsphere.png" alt="ShopSphere" className="h-[45px] w-auto object-contain" />
             </Link>
 
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center gap-6">
-              <Link
-                to="/"
-                className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
-              >
-                Home
-              </Link>
-              <Link
-                to="/products"
-                className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
-              >
-                Products
-              </Link>
-              <Link
-                to="/orders"
-                className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
-              >
-                Orders
-              </Link>
-            </nav>
+            {/* Search Bar */}
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-8 relative">
+              <input
+                type="text"
+                placeholder="Search for products, brands and more"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </form>
 
             {/* Right Side Actions */}
             <div className="flex items-center gap-4">

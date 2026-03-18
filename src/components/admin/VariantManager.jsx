@@ -3,9 +3,10 @@ import { Plus, Edit, Trash2, Image as ImageIcon, X } from 'lucide-react';
 import { variantAPI } from '../../utils/api';
 import toast from 'react-hot-toast';
 
-const VariantManager = ({ productId }) => {
+const VariantManager = ({ productId, productPrice }) => {
   const [variants, setVariants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingVariant, setEditingVariant] = useState(null);
   
@@ -65,6 +66,12 @@ const VariantManager = ({ productId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.price || formData.stock === '') {
+      toast.error('Price and Stock are required');
+      return;
+    }
+
+    setSubmitting(true);
     const formDataToSend = new FormData();
     formDataToSend.append('size', formData.size);
     formDataToSend.append('color', formData.color);
@@ -95,6 +102,8 @@ const VariantManager = ({ productId }) => {
       fetchVariants();
     } catch (error) {
       toast.error(error.message || 'Failed to save variant');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -138,7 +147,7 @@ const VariantManager = ({ productId }) => {
       size: '',
       color: '',
       material: '',
-      price: '',
+      price: productPrice || '',
       stock: '',
       is_default: false
     });
@@ -154,6 +163,7 @@ const VariantManager = ({ productId }) => {
           Product Variants
         </h3>
         <button
+          type="button"
           onClick={() => {
             resetForm();
             setShowModal(true);
@@ -224,12 +234,14 @@ const VariantManager = ({ productId }) => {
                 </div>
                 <div className="flex gap-1">
                   <button
+                    type="button"
                     onClick={() => handleEdit(variant)}
                     className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded transition-colors"
                   >
                     <Edit className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   </button>
-                  <button
+                   <button
+                    type="button"
                     onClick={() => handleDelete(variant.id)}
                     className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors"
                   >
@@ -260,13 +272,30 @@ const VariantManager = ({ productId }) => {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 {editingVariant ? 'Edit Variant' : 'Add New Variant'}
               </h2>
+               <button
+                type="button"
+                onClick={() => {
+                  setShowModal(false);
+                  resetForm();
+                }}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <div 
+              className="p-6 space-y-4"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey && e.target.tagName !== 'TEXTAREA') {
+                  handleSubmit(e);
+                }
+              }}
+            >
               {/* SKU */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -423,13 +452,22 @@ const VariantManager = ({ productId }) => {
                   Cancel
                 </button>
                 <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {editingVariant ? 'Update Variant' : 'Add Variant'}
+                  {submitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      {editingVariant ? 'Updating...' : 'Adding...'}
+                    </>
+                  ) : (
+                    <>{editingVariant ? 'Update Variant' : 'Add Variant'}</>
+                  )}
                 </button>
               </div>
-            </form>
+              </div>
           </div>
         </div>
       )}
