@@ -118,10 +118,10 @@ const OrderDetail = () => {
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-gray-900 dark:text-white">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        ₹{(item.price * item.quantity).toFixed(2)}
                       </p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        ${item.price} each
+                        ₹{item.price} each
                       </p>
                     </div>
                   </div>
@@ -163,7 +163,7 @@ const OrderDetail = () => {
                 <div className="flex justify-between text-gray-700 dark:text-gray-300">
                   <span>Subtotal</span>
                   <span>
-                    $
+                    ₹
                     {(
                       order.total_price -
                       order.total_price * order.tax_price -
@@ -174,16 +174,16 @@ const OrderDetail = () => {
                 <div className="flex justify-between text-gray-700 dark:text-gray-300">
                   <span>Tax ({(order.tax_price * 100).toFixed(0)}%)</span>
                   <span>
-                    ${(order.total_price * order.tax_price).toFixed(2)}
+                    ₹{(order.total_price * order.tax_price).toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between text-gray-700 dark:text-gray-300">
                   <span>Shipping</span>
-                  <span>${order.shipping_price.toFixed(2)}</span>
+                  <span>₹{order.shipping_price.toFixed(2)}</span>
                 </div>
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between font-bold text-lg text-gray-900 dark:text-white">
                   <span>Total</span>
-                  <span>${order.total_price}</span>
+                  <span>₹{order.total_price}</span>
                 </div>
               </div>
             </div>

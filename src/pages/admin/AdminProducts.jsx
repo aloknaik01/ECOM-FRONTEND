@@ -217,7 +217,7 @@ const AdminProducts = () => {
                           {product.category}
                         </td>
                         <td className="py-4 px-6 text-center font-semibold text-gray-900 dark:text-white">
-                          ${product.price}
+                          ₹{product.price}
                         </td>
                         <td className="py-4 px-6 text-center">
                           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${stockStatus.color}`}>

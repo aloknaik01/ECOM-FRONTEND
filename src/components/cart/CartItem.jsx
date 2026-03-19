@@ -37,7 +37,7 @@ const CartItem = ({ item, onUpdateQuantity, onRemove, viewMode = 'default' }) =>
             <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
               <p>Category: {item.product.category}</p>
               <p className="font-semibold text-gray-900 dark:text-white">
-                ${Number(item.product.price).toFixed(2)} each
+                ₹{Number(item.product.price).toFixed(2)} each
               </p>
               
               {/* Stock Warning */}
@@ -62,7 +62,7 @@ const CartItem = ({ item, onUpdateQuantity, onRemove, viewMode = 'default' }) =>
                 Total
               </p>
               <p className="text-xl font-bold text-gray-900 dark:text-white">
-                ${itemTotal.toFixed(2)}
+                ₹{itemTotal.toFixed(2)}
               </p>
             </div>
           </div>

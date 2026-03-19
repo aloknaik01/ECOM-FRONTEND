@@ -215,16 +215,16 @@ const AdminCoupons = () => {
                         <div className="font-semibold text-gray-900 dark:text-white">
                           {coupon.discount_type === 'percentage'
                             ? `${coupon.discount_value}%`
-                            : `$${coupon.discount_value}`}
+                            : `₹${coupon.discount_value}`}
                         </div>
                         {coupon.max_discount_amount && (
                           <div className="text-xs text-gray-500 dark:text-gray-400">
-                            Max: ${coupon.max_discount_amount}
+                            Max: ₹{coupon.max_discount_amount}
                           </div>
                         )}
                       </td>
                       <td className="py-4 px-6 text-center text-gray-900 dark:text-white">
-                        ${coupon.min_purchase_amount || 0}
+                        ₹{coupon.min_purchase_amount || 0}
                       </td>
                       <td className="py-4 px-6 text-center">
                         <span className="text-gray-900 dark:text-white">
@@ -305,7 +305,7 @@ const AdminCoupons = () => {
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="percentage">Percentage (%)</option>
-                    <option value="fixed">Fixed Amount ($)</option>
+                    <option value="fixed">Fixed Amount (₹)</option>
                   </select>
                 </div>
                 <div>

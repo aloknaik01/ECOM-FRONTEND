@@ -91,7 +91,7 @@ const CouponInput = ({ cartTotal, onCouponApplied, onCouponRemoved }) => {
             <div className="flex items-center justify-between">
               <span className="text-green-700 dark:text-green-300">Discount:</span>
               <span className="font-semibold text-green-900 dark:text-green-200">
-                -${appliedCoupon.discount.toFixed(2)}
+                -₹{appliedCoupon.discount.toFixed(2)}
               </span>
             </div>
           </div>
@@ -154,15 +154,15 @@ const CouponInput = ({ cartTotal, onCouponApplied, onCouponRemoved }) => {
                       <span className="text-sm font-semibold text-gray-900 dark:text-white">
                         {coupon.discount_type === 'percentage'
                           ? `${coupon.discount_value}% OFF`
-                          : `$${coupon.discount_value} OFF`}
+                          : `₹${coupon.discount_value} OFF`}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
                       <span>
-                        Min: ${coupon.min_purchase_amount || 0}
+                        Min: ₹{coupon.min_purchase_amount || 0}
                       </span>
                       {coupon.max_discount_amount && (
-                        <span>Max: ${coupon.max_discount_amount}</span>
+                        <span>Max: ₹{coupon.max_discount_amount}</span>
                       )}
                     </div>
                   </button>

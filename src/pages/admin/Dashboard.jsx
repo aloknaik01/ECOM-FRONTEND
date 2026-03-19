@@ -52,7 +52,7 @@ const Dashboard = () => {
   const statCards = [
     {
       name: 'Total Revenue',
-      value: `$${stats?.totalRevenueAllTime?.toLocaleString() || 0}`,
+      value: `₹${stats?.totalRevenueAllTime?.toLocaleString() || 0}`,
       change: stats?.revenueGrowth || '0%',
       icon: DollarSign,
       color: 'bg-green-500',
@@ -74,8 +74,8 @@ const Dashboard = () => {
     },
     {
       name: "Today's Revenue",
-      value: `$${stats?.todayRevenue?.toLocaleString() || 0}`,
-      change: `Yesterday: $${stats?.yesterdayRevenue?.toLocaleString() || 0}`,
+      value: `₹${stats?.todayRevenue?.toLocaleString() || 0}`,
+      change: `Yesterday: ₹${stats?.yesterdayRevenue?.toLocaleString() || 0}`,
       icon: TrendingUp,
       color: 'bg-orange-500',
     },
@@ -158,7 +158,7 @@ const Dashboard = () => {
           </h3>
           <div className="text-center">
             <p className="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">
-              ${stats?.currentMonthSales?.toLocaleString() || 0}
+              ₹{stats?.currentMonthSales?.toLocaleString() || 0}
             </p>
             <p className="text-gray-600 dark:text-gray-400">
               Growth: <span className={`font-semibold ${

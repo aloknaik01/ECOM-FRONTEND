@@ -174,7 +174,7 @@ const VariantSelector = ({ productId, onVariantSelected }) => {
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600 dark:text-gray-400">Price:</span>
             <span className="text-xl font-bold text-gray-900 dark:text-white">
-              ${selectedVariant.price}
+              ₹{selectedVariant.price}
             </span>
           </div>
           <div className="flex items-center justify-between">

@@ -102,7 +102,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                       {item.product.name}
                     </Link>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                      ${Number(item.product.price).toFixed(2)} each
+                      ₹{Number(item.product.price).toFixed(2)} each
                     </p>
 
                     {/* Quantity Controls */}
@@ -144,7 +144,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                   {/* Item Total */}
                   <div className="text-right">
                     <p className="font-bold text-gray-900 dark:text-white">
-                      ${(Number(item.product.price) * item.quantity).toFixed(2)}
+                      ₹{(Number(item.product.price) * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -162,7 +162,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 Subtotal:
               </span>
               <span className="font-bold text-gray-900 dark:text-white">
-                ${subtotal.toFixed(2)}
+                ₹{subtotal.toFixed(2)}
               </span>
             </div>
 

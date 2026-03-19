@@ -205,7 +205,7 @@ const ProductDetail = () => {
             {/* Price */}
             <div className="flex items-center gap-4">
               <span className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
-                ${displayPrice}
+                ₹{displayPrice}
               </span>
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${displayStock > 10
                   ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
@@ -316,7 +316,7 @@ const ProductDetail = () => {
                 <Truck className="w-6 h-6 text-gray-600 dark:text-gray-400" />
                 <div>
                   <p className="text-sm font-medium text-gray-900 dark:text-white">Free Shipping</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">Orders over $100</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Orders over ₹100</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">

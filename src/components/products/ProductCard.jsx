@@ -157,11 +157,11 @@ const ProductCard = ({ product, showDiscount = false }) => {
         {/* Price */}
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-auto">
           <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
-            ${Number(product.price).toFixed(2)}
+            ₹{Number(product.price).toFixed(2)}
           </span>
           {product.originalPrice && (
             <span className="text-sm text-gray-400 line-through">
-              ${Number(product.originalPrice).toFixed(2)}
+                ₹{Number(product.originalPrice).toFixed(2)}
             </span>
           )}
         </div>

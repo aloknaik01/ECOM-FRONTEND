@@ -71,8 +71,8 @@ const VendorDashboard = () => {
             {/* Premium Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 {[
-                    { label: 'Lifetime Sales', val: `$${stats?.totalSales?.toLocaleString()}`, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
-                    { label: 'Wallet Balance', val: `$${stats?.pendingBalance?.toLocaleString()}`, icon: DollarSign, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-900/20', action: 'Request Payout' },
+                    { label: 'Lifetime Sales', val: `₹${stats?.totalSales?.toLocaleString()}`, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+                    { label: 'Wallet Balance', val: `₹${stats?.pendingBalance?.toLocaleString()}`, icon: DollarSign, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-900/20', action: 'Request Payout' },
                     { label: 'Active Orders', val: stats?.totalOrders, icon: ListOrdered, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
                     { label: 'Products', val: stats?.totalProducts, icon: Box, color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-900/20' },
                 ].map((item, i) => (

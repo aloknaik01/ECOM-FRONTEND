@@ -30,12 +30,12 @@ const CartSummary = ({ onApplyCoupon }) => {
       <div className="space-y-4 mb-6">
         <div className="flex items-center justify-between text-gray-700 dark:text-gray-300">
           <span>Subtotal ({items.length} items)</span>
-          <span className="font-semibold">${subtotal.toFixed(2)}</span>
+          <span className="font-semibold">₹{subtotal.toFixed(2)}</span>
         </div>
 
         <div className="flex items-center justify-between text-gray-700 dark:text-gray-300">
           <span>Tax (18%)</span>
-          <span className="font-semibold">${taxAmount.toFixed(2)}</span>
+          <span className="font-semibold">₹{taxAmount.toFixed(2)}</span>
         </div>
 
         <div className="flex items-center justify-between text-gray-700 dark:text-gray-300">
@@ -47,7 +47,7 @@ const CartSummary = ({ onApplyCoupon }) => {
             {shipping === 0 ? (
               <span className="text-green-600 dark:text-green-400">FREE</span>
             ) : (
-              `$${shipping.toFixed(2)}`
+              `₹${shipping.toFixed(2)}`
             )}
           </span>
         </div>
@@ -56,7 +56,7 @@ const CartSummary = ({ onApplyCoupon }) => {
         {subtotal < FREE_SHIPPING_THRESHOLD && (
           <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <p className="text-sm text-blue-700 dark:text-blue-300 mb-2">
-              Add ${(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} more for
+              Add ₹{(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} more for
               free shipping!
             </p>
             <div className="w-full bg-blue-200 dark:bg-blue-900 rounded-full h-2">
@@ -79,7 +79,7 @@ const CartSummary = ({ onApplyCoupon }) => {
               <Tag className="w-4 h-4" />
               <span>Discount</span>
             </div>
-            <span className="font-semibold">-${discount.toFixed(2)}</span>
+            <span className="font-semibold">-₹{discount.toFixed(2)}</span>
           </div>
         )}
       </div>
@@ -89,7 +89,7 @@ const CartSummary = ({ onApplyCoupon }) => {
         <div className="flex items-center justify-between text-lg">
           <span className="font-bold text-gray-900 dark:text-white">Total</span>
           <span className="font-bold text-2xl text-primary-600 dark:text-primary-400">
-            ${total.toFixed(2)}
+            ₹{total.toFixed(2)}
           </span>
         </div>
         <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">

@@ -147,7 +147,7 @@ const AdminOrders = () => {
                         <span>{order.order_items?.length || 0} items</span>
                         <span>•</span>
                         <span className="font-semibold text-gray-900 dark:text-white">
-                          ${order.total_price?.toFixed(2)}
+                          ₹{order.total_price?.toFixed(2)}
                         </span>
                       </div>
                     </div>

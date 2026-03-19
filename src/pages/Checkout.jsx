@@ -34,7 +34,7 @@ const Checkout = () => {
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const taxRate = 0.02; // 2%
   const tax = subtotal * taxRate;
-  const shipping = subtotal > 100 ? 0 : 10; // Free shipping over $100
+  const shipping = subtotal > 100 ? 0 : 10; // Free shipping over ₹100
   const total = subtotal + tax + shipping - discount;
 
   useEffect(() => {
@@ -352,7 +352,7 @@ const Checkout = () => {
                         Qty: {item.quantity}
                       </p>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        ₹{(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -363,25 +363,25 @@ const Checkout = () => {
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-3">
                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>₹{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
                   <span>Tax (2%)</span>
-                  <span>${tax.toFixed(2)}</span>
+                  <span>₹{tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                  <span>{shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600 dark:text-green-400 font-semibold">
                     <span>Discount ({appliedCoupon?.code})</span>
-                    <span>-${discount.toFixed(2)}</span>
+                    <span>-₹{discount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between text-lg font-bold text-gray-900 dark:text-white">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
               </div>
 

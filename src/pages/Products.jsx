@@ -197,7 +197,7 @@ const Products = () => {
               )}
               {(filters.minPrice || filters.maxPrice) && (
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm">
-                  ${filters.minPrice || '0'} - ${filters.maxPrice || '∞'}
+                  ₹{filters.minPrice || '0'} - ₹{filters.maxPrice || '∞'}
                 </span>
               )}
               {filters.ratings && (

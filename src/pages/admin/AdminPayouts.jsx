@@ -79,7 +79,7 @@ const AdminPayouts = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
-                                            ${Number(payout.amount).toFixed(2)}
+                                            ₹{Number(payout.amount).toFixed(2)}
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                             {new Date(payout.requested_at).toLocaleDateString()}

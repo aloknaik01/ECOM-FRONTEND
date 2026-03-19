@@ -56,7 +56,7 @@ const Cart = () => {
       
       if (discount) {
         dispatch(applyCoupon(discount));
-        toast.success(`Coupon applied! $${discount} off`);
+        toast.success(`Coupon applied! ₹${discount} off`);
         setCouponCode('');
       } else {
         toast.error('Invalid coupon code');
@@ -162,7 +162,7 @@ const Cart = () => {
                         Coupon Applied
                       </p>
                       <p className="text-sm text-green-700 dark:text-green-300">
-                        You're saving ${couponDiscount.toFixed(2)}
+                        You're saving ₹{couponDiscount.toFixed(2)}
                       </p>
                     </div>
                   </div>

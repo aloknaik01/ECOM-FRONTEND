@@ -153,7 +153,7 @@ const Wishlist = () => {
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-1">
                   <span className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
-                    ${product.price}
+                    ₹{product.price}
                   </span>
                   <span className="text-[10px] sm:text-sm text-gray-600 dark:text-gray-400">
                     {product.category}
