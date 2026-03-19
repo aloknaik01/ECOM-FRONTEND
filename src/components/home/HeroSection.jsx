@@ -1,140 +1,364 @@
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+const slides = [
+  {
+    id: 1,
+    tag: 'Hot Deal',
+    title: 'Next-Gen',
+    titleHighlight: 'Electronics',
+    description: 'Experience cutting-edge tech at unbeatable prices. Shop our curated collection of premium gadgets.',
+    buttonText: 'Shop Electronics',
+    buttonLink: '/products?category=Electronics',
+    secondaryText: 'Free Delivery',
+    image: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&h=700&fit=crop&q=80',
+    overlay: 'linear-gradient(125deg, #0f172a 0%, #1e3a5f 40%, #0c4a6e 70%, transparent 100%)',
+    accent: '#38bdf8',
+    accentDark: '#0369a1',
+    badge: 'Up to 40% OFF',
+  },
+  {
+    id: 2,
+    tag: 'New Season',
+    title: 'Fashion',
+    titleHighlight: 'Redefined',
+    description: "Stay ahead of every trend. Discover exclusive styles from the world's top designers.",
+    buttonText: 'Explore Fashion',
+    buttonLink: '/products?category=Fashion',
+    secondaryText: 'New Arrivals Daily',
+    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=900&h=700&fit=crop&q=80',
+    overlay: 'linear-gradient(125deg, #1a0533 0%, #4c1d95 40%, #7c3aed 70%, transparent 100%)',
+    accent: '#c4b5fd',
+    accentDark: '#7c3aed',
+    badge: 'New Collection',
+  },
+  {
+    id: 3,
+    tag: 'Home Living',
+    title: 'Transform',
+    titleHighlight: 'Your Space',
+    description: 'Premium home décor and furniture. Make every corner of your home a story worth telling.',
+    buttonText: 'Shop Home',
+    buttonLink: '/products?category=Home & Garden',
+    secondaryText: 'Interior Inspirations',
+    image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&h=700&fit=crop&q=80',
+    overlay: 'linear-gradient(125deg, #0f2918 0%, #14532d 40%, #166534 70%, transparent 100%)',
+    accent: '#86efac',
+    accentDark: '#16a34a',
+    badge: 'Free Shipping',
+  },
+  {
+    id: 4,
+    tag: 'Active Life',
+    title: 'Sports &',
+    titleHighlight: 'Fitness Gear',
+    description: 'Fuel your fitness journey with top-of-the-line equipment and activewear for every goal.',
+    buttonText: 'Get Active',
+    buttonLink: '/products?category=Sports',
+    secondaryText: 'Pro-Grade Equipment',
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&h=700&fit=crop&q=80',
+    // overlay: 'linear-gradient(125deg, #1c0a00 0%, #78350f 40%, #b45309 70%, transparent 100%)',
+    accent: '#fde68a',
+    accentDark: '#d97706',
+    badge: 'Best Sellers',
+  },
+  {
+    id: 5,
+    tag: 'Beauty',
+    title: 'Glow Up',
+    titleHighlight: 'Collection',
+    description: 'Luxury beauty essentials, skincare and cosmetics that nourish and inspire confidence.',
+    buttonText: 'Shop Beauty',
+    buttonLink: '/products?category=Beauty',
+    secondaryText: 'Premium Brands',
+    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=900&h=700&fit=crop&q=80',
+    overlay: 'linear-gradient(125deg, #2d0716 0%, #881337 40%, #be185d 70%, transparent 100%)',
+    accent: '#fbcfe8',
+    accentDark: '#be185d',
+    badge: 'Up to 30% OFF',
+  },
+];
+
+const AUTO_PLAY_INTERVAL = 5000;
 
 const HeroSection = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [current, setCurrent] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [direction, setDirection] = useState('next');
+  const [animating, setAnimating] = useState(false);
+  const timerRef = useRef(null);
 
-  const slides = [
-    {
-      id: 1,
-      title: 'Premium Collection',
-      subtitle: 'Modern Electronics',
-      description: 'Experience cutting-edge technology with our curated gadgets.',
-      buttonText: 'Shop Tech',
-      bgColor: 'from-cyan-300 to-blue-400',
-      image: 'https://images.unsplash.com/photo-1526733170375-be81ef7d96af?w=600&h=600&fit=crop',
+  // Drag/touch state
+  const dragStart = useRef(null);
+  const dragDelta = useRef(0);
+  const isDragging = useRef(false);
+
+  const goTo = useCallback(
+    (index, dir = 'next') => {
+      if (animating) return;
+      setDirection(dir);
+      setAnimating(true);
+      setTimeout(() => {
+        setCurrent(index);
+        setAnimating(false);
+      }, 50);
     },
-    {
-      id: 2,
-      title: 'First Order Offer',
-      subtitle: 'Get $10 Off',
-      description: 'Subscribe to our newsletter and get a discount on your first purchase.',
-      buttonText: 'Claim Discount',
-      bgColor: 'from-gray-600 to-gray-700',
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=600&fit=crop',
-    },
-    {
-      id: 3,
-      title: 'New Arrivals',
-      subtitle: 'Season Trends',
-      description: 'Stay ahead of the curve with our latest seasonal collections.',
-      buttonText: 'View New',
-      bgColor: 'from-orange-400 to-pink-500',
-      image: 'https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=600&h=600&fit=crop',
-    },
-  ];
+    [animating]
+  );
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
+  const next = useCallback(() => {
+    goTo((current + 1) % slides.length, 'next');
+  }, [current, goTo]);
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  const prev = useCallback(() => {
+    goTo((current - 1 + slides.length) % slides.length, 'prev');
+  }, [current, goTo]);
 
-  // Auto-play with pause on unmount
+  // Auto-play
+  const startTimer = useCallback(() => {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(next, AUTO_PLAY_INTERVAL);
+  }, [next]);
+
   useEffect(() => {
-    const timer = setInterval(nextSlide, 6000);
-    return () => clearInterval(timer);
-  }, []);
+    if (isPlaying) startTimer();
+    return () => clearInterval(timerRef.current);
+  }, [isPlaying, startTimer]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === ' ') setIsPlaying((p) => !p);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [next, prev]);
+
+  // Drag/touch handlers
+  const onPointerDown = (e) => {
+    dragStart.current = e.clientX ?? e.touches?.[0]?.clientX;
+    dragDelta.current = 0;
+    isDragging.current = true;
+    clearInterval(timerRef.current);
+  };
+
+  const onPointerMove = (e) => {
+    if (!isDragging.current) return;
+    const x = e.clientX ?? e.touches?.[0]?.clientX;
+    if (x != null) dragDelta.current = x - dragStart.current;
+  };
+
+  const onPointerUp = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    if (dragDelta.current < -60) next();
+    else if (dragDelta.current > 60) prev();
+    if (isPlaying) startTimer();
+  };
+
+  const slide = slides[current];
 
   return (
-    <div className="relative h-[420px] rounded-3xl overflow-hidden group bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 shadow-[0_18px_45px_rgba(15,23,42,0.8)]">
-
+    <div
+      className="relative w-full overflow-hidden select-none rounded-2xl shadow-xl"
+      style={{ height: 'clamp(220px, 34vw, 400px)' }}
+      onMouseDown={onPointerDown}
+      onMouseMove={onPointerMove}
+      onMouseUp={onPointerUp}
+      onMouseLeave={onPointerUp}
+      onTouchStart={onPointerDown}
+      onTouchMove={onPointerMove}
+      onTouchEnd={onPointerUp}
+      role="region"
+      aria-label="Hero Carousel"
+    >
       {/* Slides */}
-      {slides.map((slide, index) => (
+      {slides.map((s, i) => (
         <div
-          key={slide.id}
-          className={`absolute inset-0 transition-all duration-700 ease-out ${
-            index === currentSlide
-              ? 'opacity-100 translate-x-0 scale-100'
-              : 'opacity-0 translate-x-6 scale-95'
-          }`}
+          key={s.id}
+          aria-hidden={i !== current}
+          className="absolute inset-0 transition-all duration-700 ease-[cubic-bezier(.77,0,.18,1)]"
+          style={{
+            opacity: i === current ? 1 : 0,
+            transform: i === current
+              ? 'translateX(0) scale(1)'
+              : direction === 'next'
+                ? 'translateX(6%) scale(0.97)'
+                : 'translateX(-6%) scale(0.97)',
+            zIndex: i === current ? 2 : 1,
+            pointerEvents: i === current ? 'auto' : 'none',
+          }}
         >
-          <div className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 md:px-10">
-            <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-[1.3fr_1fr] gap-6 md:gap-10 items-center">
-              {/* Content */}
-              <div className="relative z-10 rounded-3xl bg-gradient-to-br from-slate-900/90 via-slate-950/95 to-slate-900/90 border border-white/5 shadow-[0_22px_60px_rgba(15,23,42,0.95)] px-6 sm:px-8 md:px-10 py-8 md:py-10 backdrop-blur-xl">
-                <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] uppercase tracking-[0.2em] mb-5 text-slate-100">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                  Featured
-                </p>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-2 leading-tight text-slate-50">
-                  {slide.title}
-                </h2>
-                <p className="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 text-slate-200">
-                  {slide.subtitle}
-                </p>
-                <p className="text-sm sm:text-base md:text-lg mb-7 text-slate-300 max-w-xl">
-                  {slide.description}
-                </p>
+          {/* Background image */}
+          <img
+            src={s.image}
+            alt={s.title + ' ' + s.titleHighlight}
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            draggable={false}
+          />
 
-                <div className="flex flex-wrap items-center gap-4">
-                  <button className="relative inline-flex items-center justify-center px-7 sm:px-8 py-3 rounded-full font-semibold text-slate-900 bg-slate-50 shadow-[0_10px_30px_rgba(15,23,42,0.4)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_55px_rgba(15,23,42,1)]">
-                    <span>{slide.buttonText}</span>
-                    <span className="ml-2 text-lg">→</span>
-                    <span className="pointer-events-none absolute inset-0 rounded-full border border-slate-200/70 opacity-70"></span>
-                  </button>
-                  <span className="text-xs sm:text-sm text-slate-300">
-                    Free shipping on orders over $99
-                  </span>
-                </div>
+          {/* Subtle dark gradient for text readability (left to right) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent pointer-events-none" />
+
+          {/* Content */}
+          <div className="relative h-full flex items-center px-5 sm:px-10 md:px-16 lg:px-20 max-w-screen-2xl mx-auto">
+            <div
+              className="max-w-lg space-y-2.5 sm:space-y-3 transition-all duration-700"
+              style={{
+                opacity: i === current ? 1 : 0,
+                transform: i === current ? 'translateY(0)' : 'translateY(24px)',
+                transitionDelay: i === current ? '200ms' : '0ms',
+              }}
+            >
+              {/* Tag */}
+              <span
+                className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border backdrop-blur-sm"
+                style={{
+                  background: `${s.accent}22`,
+                  borderColor: `${s.accent}55`,
+                  color: s.accent,
+                }}
+              >
+                {s.tag}
+              </span>
+
+              {/* Heading */}
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight text-white drop-shadow-lg">
+                {s.title}
+                <br />
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage: `linear-gradient(90deg, ${s.accent}, #fff)`,
+                  }}
+                >
+                  {s.titleHighlight}
+                </span>
+              </h1>
+
+              {/* Description */}
+              <p className="text-xs sm:text-sm text-white/80 max-w-md leading-relaxed">
+                {s.description}
+              </p>
+
+              {/* CTA row */}
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <Link
+                  to={s.buttonLink}
+                  className="group relative inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full font-bold text-xs sm:text-sm shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-[0_16px_48px_rgba(0,0,0,0.5)] active:scale-95"
+                  style={{
+                    background: `linear-gradient(135deg, ${s.accent}, ${s.accentDark})`,
+                    color: '#fff',
+                  }}
+                >
+                  {s.buttonText}
+                  <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
+
+                {/* Badge */}
+                <span
+                  className="text-xs px-2.5 py-1 rounded-full font-semibold border"
+                  style={{
+                    background: 'rgba(255,255,255,0.08)',
+                    borderColor: 'rgba(255,255,255,0.2)',
+                    color: '#fff',
+                  }}
+                >
+                  🏷 {s.badge}
+                </span>
               </div>
 
-              {/* Product / image */}
-              <div className="relative flex items-center justify-center md:justify-end mt-4 md:mt-0">
-                <div className="relative w-48 sm:w-56 md:w-[260px] aspect-[4/5] rounded-3xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-white/10 shadow-[0_25px_70px_rgba(15,23,42,1)] overflow-hidden">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(148,163,184,0.45),transparent_55%),radial-gradient(circle_at_90%_80%,rgba(94,234,212,0.35),transparent_55%)]" />
-                  <img
-                    src={slide.image}
-                    alt={slide.title}
-                    className="relative z-10 h-full w-full object-contain transform transition-transform duration-700 group-hover:scale-[1.04] group-hover:translate-y-0.5"
-                  />
-                </div>
-              </div>
+              {/* Secondary info */}
+              <p className="text-xs text-white/50 flex items-center gap-1.5">
+                <span
+                  className="w-2 h-2 rounded-full animate-pulse"
+                  style={{ background: s.accent }}
+                />
+                {s.secondaryText} · Free Returns · Secure Checkout
+              </p>
             </div>
           </div>
         </div>
       ))}
 
-      {/* Navigation Arrows */}
+      {/* ── Navigation Arrows ── */}
       <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/85 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:-translate-x-0.5"
+        onClick={(e) => { e.stopPropagation(); prev(); }}
+        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full backdrop-blur-md border border-white/20 bg-black/30 text-white shadow-xl transition-all duration-200 hover:bg-white/20 hover:scale-110 active:scale-95"
+        aria-label="Previous slide"
       >
-        <ChevronLeft className="w-6 h-6 text-gray-800" />
-      </button>
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/85 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:translate-x-0.5"
-      >
-        <ChevronRight className="w-6 h-6 text-gray-800" />
+        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
       </button>
 
-      {/* Dots Indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              index === currentSlide
-                ? 'bg-white w-8 shadow-[0_0_12px_rgba(255,255,255,0.9)]'
-                : 'bg-white/50 w-2 hover:bg-white/80'
-            }`}
-          />
-        ))}
+      <button
+        onClick={(e) => { e.stopPropagation(); next(); }}
+        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full backdrop-blur-md border border-white/20 bg-black/30 text-white shadow-xl transition-all duration-200 hover:bg-white/20 hover:scale-110 active:scale-95"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+      </button>
+
+      {/* ── Bottom Controls ── */}
+      <div className="absolute bottom-4 sm:bottom-6 left-0 right-0 z-10 flex items-center justify-center gap-4">
+        {/* Dot indicators */}
+        <div className="flex items-center gap-2">
+          {slides.map((s, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i, i > current ? 'next' : 'prev')}
+              aria-label={`Go to slide ${i + 1}`}
+              aria-current={i === current}
+              className="relative overflow-hidden rounded-full transition-all duration-500"
+              style={{
+                width: i === current ? '2.5rem' : '0.55rem',
+                height: '0.55rem',
+                background:
+                  i === current
+                    ? slides[current].accent
+                    : 'rgba(255,255,255,0.35)',
+              }}
+            >
+              {i === current && (
+                <span
+                  className="absolute inset-0 rounded-full origin-left"
+                  style={{
+                    background: 'rgba(255,255,255,0.3)',
+                    animation: isPlaying
+                      ? `carousel-progress ${AUTO_PLAY_INTERVAL}ms linear forwards`
+                      : 'none',
+                    key: current,
+                  }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Play / Pause */}
+        <button
+          onClick={() => setIsPlaying((p) => !p)}
+          className="flex items-center justify-center w-7 h-7 rounded-full backdrop-blur-md border border-white/20 bg-black/30 text-white transition-all duration-200 hover:bg-white/20 hover:scale-110"
+          aria-label={isPlaying ? 'Pause autoplay' : 'Resume autoplay'}
+        >
+          {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+        </button>
+
+        {/* Slide count */}
+        <span className="text-white/50 text-xs tabular-nums">
+          {current + 1} / {slides.length}
+        </span>
       </div>
+
+      {/* Inject keyframes */}
+      <style>{`
+        @keyframes carousel-progress {
+          from { transform: scaleX(0); }
+          to   { transform: scaleX(1); }
+        }
+      `}</style>
     </div>
   );
 };
