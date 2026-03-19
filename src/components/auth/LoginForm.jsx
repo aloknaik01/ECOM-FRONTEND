@@ -77,7 +77,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md py-12 transition-colors duration-200">
+    <div className="w-full max-w-md py-4 sm:py-8 transition-colors duration-200">
       {/* Theme Toggle Button */}
       <button
         onClick={toggleTheme}
@@ -93,7 +93,7 @@ const LoginForm = () => {
 
       <div>
         {/* Logo & Brand */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center mb-4">
             <img src="/shopsphere.png" alt="ShopSphere" className="h-[80px] w-auto object-contain" />
           </div>
@@ -266,7 +266,7 @@ const LoginForm = () => {
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
           Protected by reCAPTCHA and subject to our{' '}
           <Link to="/privacy" className="underline hover:text-gray-700 dark:hover:text-gray-300">
             Privacy Policy

@@ -68,25 +68,25 @@ const Wishlist = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
               My Wishlist
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
               {items.length} {items.length === 1 ? 'item' : 'items'} saved
             </p>
           </div>
           <button
             onClick={handleClearAll}
-            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium"
+            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium text-sm sm:text-base self-start sm:self-auto"
           >
             Clear All
           </button>
         </div>
 
         {/* Wishlist Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {items.map((product) => (
             <div
               key={product.id}
@@ -124,9 +124,9 @@ const Wishlist = () => {
               </Link>
 
               {/* Product Info */}
-              <div className="p-4">
+              <div className="p-3 sm:p-4">
                 <Link to={`/product/${product.id}`}>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 sm:mb-2 text-xs sm:text-base line-clamp-2 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                     {product.name}
                   </h3>
                 </Link>
@@ -151,11 +151,11 @@ const Wishlist = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-1">
+                  <span className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
                     ${product.price}
                   </span>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-[10px] sm:text-sm text-gray-600 dark:text-gray-400">
                     {product.category}
                   </span>
                 </div>
@@ -164,9 +164,9 @@ const Wishlist = () => {
                 <button
                   onClick={() => handleMoveToCart(product)}
                   disabled={product.stock === 0}
-                  className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 sm:py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-base"
                 >
-                  <ShoppingCart className="w-5 h-5" />
+                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                   {product.stock === 0 ? 'Out of Stock' : 'Move to Cart'}
                 </button>
               </div>

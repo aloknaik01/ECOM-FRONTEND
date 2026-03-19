@@ -163,8 +163,8 @@ const HeroSection = () => {
 
   return (
     <div
-      className="relative w-full overflow-hidden select-none rounded-2xl shadow-xl"
-      style={{ height: 'clamp(220px, 34vw, 400px)' }}
+      className="relative w-full overflow-hidden select-none rounded-xl sm:rounded-2xl shadow-xl"
+      style={{ height: 'clamp(280px, 45vw, 400px)' }}
       onMouseDown={onPointerDown}
       onMouseMove={onPointerMove}
       onMouseUp={onPointerUp}
@@ -204,9 +204,9 @@ const HeroSection = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent pointer-events-none" />
 
           {/* Content */}
-          <div className="relative h-full flex items-center px-5 sm:px-10 md:px-16 lg:px-20 max-w-screen-2xl mx-auto">
+          <div className="relative h-full flex items-center px-4 sm:px-10 md:px-16 lg:px-20 max-w-screen-2xl mx-auto">
             <div
-              className="max-w-lg space-y-2.5 sm:space-y-3 transition-all duration-700"
+              className="max-w-md sm:max-w-lg space-y-2 sm:space-y-3.5 transition-all duration-700"
               style={{
                 opacity: i === current ? 1 : 0,
                 transform: i === current ? 'translateY(0)' : 'translateY(24px)',
@@ -226,7 +226,7 @@ const HeroSection = () => {
               </span>
 
               {/* Heading */}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight text-white drop-shadow-lg">
+              <h1 className="text-xl sm:text-3xl md:text-4xl font-black leading-tight text-white drop-shadow-md sm:drop-shadow-lg">
                 {s.title}
                 <br />
                 <span
@@ -240,27 +240,27 @@ const HeroSection = () => {
               </h1>
 
               {/* Description */}
-              <p className="text-xs sm:text-sm text-white/80 max-w-md leading-relaxed">
+              <p className="text-[10px] sm:text-sm text-white/80 max-w-[260px] sm:max-w-md leading-relaxed line-clamp-2 sm:line-clamp-none">
                 {s.description}
               </p>
 
               {/* CTA row */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1 sm:pt-2">
                 <Link
                   to={s.buttonLink}
-                  className="group relative inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full font-bold text-xs sm:text-sm shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-[0_16px_48px_rgba(0,0,0,0.5)] active:scale-95"
+                  className="group relative inline-flex items-center gap-1 sm:gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full font-bold text-[10px] sm:text-sm shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-[0_16px_48px_rgba(0,0,0,0.5)] active:scale-95"
                   style={{
                     background: `linear-gradient(135deg, ${s.accent}, ${s.accentDark})`,
                     color: '#fff',
                   }}
                 >
                   {s.buttonText}
-                  <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
 
                 {/* Badge */}
                 <span
-                  className="text-xs px-2.5 py-1 rounded-full font-semibold border"
+                  className="text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full font-semibold border"
                   style={{
                     background: 'rgba(255,255,255,0.08)',
                     borderColor: 'rgba(255,255,255,0.2)',
@@ -287,18 +287,18 @@ const HeroSection = () => {
       {/* ── Navigation Arrows ── */}
       <button
         onClick={(e) => { e.stopPropagation(); prev(); }}
-        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full backdrop-blur-md border border-white/20 bg-black/30 text-white shadow-xl transition-all duration-200 hover:bg-white/20 hover:scale-110 active:scale-95"
+        className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center rounded-full backdrop-blur-md border border-white/20 bg-black/30 text-white shadow-xl transition-all duration-200 hover:bg-white/20 hover:scale-110 active:scale-95"
         aria-label="Previous slide"
       >
-        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+        <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
       </button>
 
       <button
         onClick={(e) => { e.stopPropagation(); next(); }}
-        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full backdrop-blur-md border border-white/20 bg-black/30 text-white shadow-xl transition-all duration-200 hover:bg-white/20 hover:scale-110 active:scale-95"
+        className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center rounded-full backdrop-blur-md border border-white/20 bg-black/30 text-white shadow-xl transition-all duration-200 hover:bg-white/20 hover:scale-110 active:scale-95"
         aria-label="Next slide"
       >
-        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+        <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
       </button>
 
       {/* ── Bottom Controls ── */}
@@ -340,10 +340,10 @@ const HeroSection = () => {
         {/* Play / Pause */}
         <button
           onClick={() => setIsPlaying((p) => !p)}
-          className="flex items-center justify-center w-7 h-7 rounded-full backdrop-blur-md border border-white/20 bg-black/30 text-white transition-all duration-200 hover:bg-white/20 hover:scale-110"
+          className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full backdrop-blur-md border border-white/20 bg-black/30 text-white transition-all duration-200 hover:bg-white/20 hover:scale-110"
           aria-label={isPlaying ? 'Pause autoplay' : 'Resume autoplay'}
         >
-          {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+          {isPlaying ? <Pause className="w-2.5 h-2.5 sm:w-3 h-3" /> : <Play className="w-2.5 h-2.5 sm:w-3 h-3" />}
         </button>
 
         {/* Slide count */}

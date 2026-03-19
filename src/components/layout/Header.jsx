@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../store/slices/authSlice';
 import { useTheme } from '../../context/ThemeContext';
@@ -13,9 +13,18 @@ const Header = () => {
   const { items: cartItems } = useSelector((state) => state.cart);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
   const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Hide header on auth and admin pages
+  const hideHeaderPaths = ['/login', '/register', '/forgot-password'];
+  if (hideHeaderPaths.includes(location.pathname) || 
+      location.pathname.startsWith('/password/reset/') || 
+      location.pathname.startsWith('/admin')) {
+    return null;
+  }
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -95,13 +104,14 @@ const Header = () => {
                 )}
               </button>
 
-              {/* User Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 focus:outline-none"
-                >
-                  <div className="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center ring-2 ring-primary-600 dark:ring-primary-400">
+              {/* User Dropdown or Login */}
+              {user ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="flex items-center gap-2 focus:outline-none"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center ring-2 ring-primary-600 dark:ring-primary-400">
                     {user?.avatar?.url ? (
                       <img
                         src={user.avatar.url}
@@ -199,8 +209,29 @@ const Header = () => {
                   </>
                 )}
               </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="font-medium">Login</span>
+                </Link>
+              )}
             </div>
           </div>
+          
+          {/* Mobile Search Bar */}
+          <form onSubmit={handleSearch} className="md:hidden flex w-full relative pb-3 mt-1">
+            <input
+              type="text"
+              placeholder="Search for products, brands and more"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white pl-10 pr-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors text-sm"
+            />
+            <Search className="absolute left-3 top-1/2 -translate-y-[calc(50%+6px)] w-4 h-4 text-gray-500 dark:text-gray-400" />
+          </form>
         </div>
       </header>
 

@@ -13,7 +13,7 @@ const CartItem = ({ item, onUpdateQuantity, onRemove, viewMode = 'default' }) =>
       {/* Product Image */}
       <Link
         to={`/product/${item.product.id}`}
-        className="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden group"
+        className="flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden group"
       >
         <img
           src={item.product.images?.[0]?.url || '/placeholder.png'}
@@ -69,29 +69,29 @@ const CartItem = ({ item, onUpdateQuantity, onRemove, viewMode = 'default' }) =>
         </div>
 
         {/* Quantity Controls & Remove */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 gap-4">
           {/* Quantity Controls */}
           <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Quantity:
             </span>
-            <div className="flex items-center border-2 border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+            <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
               <button
                 onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
                 disabled={item.quantity === 1}
-                className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2 sm:px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Minus className="w-4 h-4" />
+                <Minus className="w-3.5 h-3.5 sm:w-4 h-4" />
               </button>
-              <span className="w-16 text-center font-semibold text-gray-900 dark:text-white border-x-2 border-gray-300 dark:border-gray-600 py-2">
+              <span className="w-12 sm:w-16 text-center font-semibold text-gray-900 dark:text-white border-x border-gray-300 dark:border-gray-600 py-1.5 sm:py-2 text-sm sm:text-base">
                 {item.quantity}
               </span>
               <button
                 onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
                 disabled={item.quantity >= item.product.stock}
-                className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2 sm:px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-3.5 h-3.5 sm:w-4 h-4" />
               </button>
             </div>
           </div>
@@ -99,10 +99,10 @@ const CartItem = ({ item, onUpdateQuantity, onRemove, viewMode = 'default' }) =>
           {/* Remove Button */}
           <button
             onClick={() => onRemove(item.product.id)}
-            className="flex items-center gap-2 px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors font-medium"
+            className="flex items-center justify-center gap-2 px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors font-medium border border-transparent hover:border-red-200 dark:hover:border-red-900/50"
           >
             <Trash2 className="w-4 h-4" />
-            <span>Remove</span>
+            <span className="text-sm">Remove item</span>
           </button>
         </div>
       </div>

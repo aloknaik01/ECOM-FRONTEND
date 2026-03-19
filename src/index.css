@@ -3,13 +3,51 @@
 @tailwind utilities;
 
 :root {
+  /* Premium Slate for gray */
+  --color-gray-50: 248 250 252;
+  --color-gray-100: 241 245 249;
+  --color-gray-200: 226 232 240;
+  --color-gray-300: 203 213 225;
+  --color-gray-400: 148 163 184;
+  --color-gray-500: 100 116 139;
+  --color-gray-600: 71 85 105;
+  --color-gray-700: 51 65 85;
+  --color-gray-800: 30 41 59;
+  --color-gray-900: 15 23 42;
+  --color-gray-950: 2 6 23;
+
+  /* Premium Indigo for primary */
+  --color-primary-50: 238 242 255;
+  --color-primary-100: 224 231 255;
+  --color-primary-200: 199 210 254;
+  --color-primary-300: 165 180 252;
+  --color-primary-400: 129 140 248;
+  --color-primary-500: 99 102 241;
+  --color-primary-600: 79 70 229;
+  --color-primary-700: 67 56 202;
+  --color-primary-800: 55 48 163;
+  --color-primary-900: 49 46 129;
+  --color-primary-950: 30 27 75;
+
+  /* Rose for Danger */
+  --color-danger-500: 244 63 94;
+  --color-danger-600: 225 29 72;
+
+  /* Emerald for Success */
+  --color-success-500: 16 185 129;
+  --color-success-600: 5 150 105;
+
   --toast-bg: #ffffff;
   --toast-color: #1f2937;
 }
 
 .dark {
-  --toast-bg: #1f2937;
-  --toast-color: #f9fafb;
+  /* Deepen dark mode base colors for a sleek, premium feel */
+  --color-gray-800: 15 23 42;   /* Slate 900 for surfaces */
+  --color-gray-900: 2 6 23;     /* Slate 950 for backgrounds */
+  
+  --toast-bg: #0f172a;
+  --toast-color: #f8fafc;
 }
 
 * {

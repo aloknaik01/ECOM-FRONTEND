@@ -42,14 +42,14 @@ const Home = () => {
       <CategoryBar />
 
       {/* ── Hero Carousel (inside the container) ── */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-4">
+      <div className="max-w-[1400px] mx-auto px-2 sm:px-6 pt-2 sm:pt-4">
         <HeroSection />
       </div>
 
       {/* ── Rest of page content ── */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
-        <div className="flex flex-col gap-6">
-          <main className="w-full space-y-6">
+      <div className="max-w-[1400px] mx-auto px-2 sm:px-6 py-4 sm:py-6">
+        <div className="flex flex-col gap-4 sm:gap-6">
+          <main className="w-full space-y-4 sm:space-y-6">
 
             {/* Flash Deals Section */}
             {!loading && <FlashSales />}

@@ -14,6 +14,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const { items: wishlistItems = [] } = useSelector(state => state.wishlist || {});
   const isInWishlist = wishlistItems.some(item => item.id === id);
 
@@ -69,6 +70,8 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) return navigate('/login');
+
     if (selectedVariant && selectedVariant.stock === 0) {
       toast.error('This variant is out of stock');
       return;
@@ -90,6 +93,8 @@ const ProductDetail = () => {
   };
 
   const handleWishlist = () => {
+    if (!isAuthenticated) return navigate('/login');
+
     if (isInWishlist) {
       dispatch(removeFromWishlist(id));
     } else {
@@ -116,18 +121,18 @@ const ProductDetail = () => {
     : product.images || [];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6"
+          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-4 sm:mb-6 text-sm sm:text-base"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           Back
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           {/* Left - Images */}
           <div>
             {/* Main Image */}
@@ -199,7 +204,7 @@ const ProductDetail = () => {
 
             {/* Price */}
             <div className="flex items-center gap-4">
-              <span className="text-4xl font-bold text-gray-900 dark:text-white">
+              <span className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
                 ${displayPrice}
               </span>
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${displayStock > 10
@@ -280,24 +285,24 @@ const ProductDetail = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3">
+            <div className="flex gap-3 sticky bottom-4 sm:relative sm:bottom-0 z-10 w-full sm:w-auto">
               <button
                 onClick={handleAddToCart}
                 disabled={displayStock === 0}
-                className="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-4 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 sm:py-4 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg sm:shadow-none"
               >
                 <ShoppingCart className="w-5 h-5" />
                 Add to Cart
               </button>
               <button
                 onClick={handleWishlist}
-                className={`p-4 border-2 rounded-lg transition-colors ${isInWishlist
+                className={`p-3.5 sm:p-4 border-2 rounded-xl transition-colors shadow-lg sm:shadow-none ${isInWishlist
                     ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                    : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
+                    : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 bg-white dark:bg-gray-800'
                   }`}
               >
                 <Heart
-                  className={`w-6 h-6 ${isInWishlist
+                  className={`w-5 h-5 sm:w-6 sm:h-6 ${isInWishlist
                       ? 'fill-red-500 text-red-500'
                       : 'text-gray-600 dark:text-gray-400'
                     }`}

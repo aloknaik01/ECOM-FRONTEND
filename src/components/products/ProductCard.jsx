@@ -1,19 +1,22 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Star, ShoppingCart, Heart, Eye } from 'lucide-react';
 import LucideIcon from '../common/LucideIcon';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { addToCart } from '../../store/slices/cartSlice';
 import toast from 'react-hot-toast';
 
 const ProductCard = ({ product, showDiscount = false }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isAuthenticated) return navigate('/login');
     setIsWishlisted(!isWishlisted);
     toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
   };
@@ -21,6 +24,7 @@ const ProductCard = ({ product, showDiscount = false }) => {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isAuthenticated) return navigate('/login');
     
     if (product.stock === 0) {
       toast.error('Product is out of stock');
@@ -91,10 +95,10 @@ const ProductCard = ({ product, showDiscount = false }) => {
         {/* Wishlist Button */}
         <button
           onClick={handleWishlist}
-          className="absolute top-3 right-3 w-9 h-9 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-50 dark:hover:bg-red-900/20"
+          className="absolute top-2 right-2 w-8 h-8 sm:w-9 sm:h-9 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-50 dark:hover:bg-red-900/20"
         >
           <Heart
-            className={`w-5 h-5 ${
+            className={`w-4 h-4 sm:w-5 sm:h-5 ${
               isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-600 dark:text-gray-300'
             }`}
           />
@@ -104,18 +108,18 @@ const ProductCard = ({ product, showDiscount = false }) => {
         {product.stock > 0 && (
           <button
             onClick={handleAddToCart}
-            className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white px-4 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 hover:bg-primary-700 text-sm font-medium shadow-lg"
+            className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 hover:bg-primary-700 text-xs sm:text-sm font-medium shadow-lg whitespace-nowrap"
           >
-            <ShoppingCart className="w-4 h-4" />
+            <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Add to cart
           </button>
         )}
       </div>
 
       {/* Product Info */}
-      <div className="p-4 flex flex-col flex-grow">
+      <div className="p-3 sm:p-4 flex flex-col flex-grow">
         {/* Product Name */}
-        <h3 className="text-gray-800 dark:text-gray-200 font-medium text-sm line-clamp-2 mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+        <h3 className="text-gray-800 dark:text-gray-200 font-medium text-xs sm:text-sm line-clamp-2 mb-1.5 sm:mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
           {product.name}
         </h3>
 
@@ -151,8 +155,8 @@ const ProductCard = ({ product, showDiscount = false }) => {
         )}
 
         {/* Price */}
-        <div className="flex items-center gap-2 mt-auto">
-          <span className="text-lg font-bold text-gray-900 dark:text-white">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-auto">
+          <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
             ${Number(product.price).toFixed(2)}
           </span>
           {product.originalPrice && (

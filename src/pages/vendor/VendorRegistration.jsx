@@ -88,18 +88,18 @@ const VendorRegistration = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto py-6 sm:py-12 px-2 sm:px-6 lg:px-8">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
                 {/* Header */}
-                <div className="bg-primary-600 px-8 py-10 text-white text-center">
-                    <h1 className="text-3xl font-bold mb-2">Sell with Us</h1>
-                    <p className="text-primary-100 max-w-2xl mx-auto">
+                <div className="bg-primary-600 px-4 sm:px-8 py-6 sm:py-10 text-white text-center">
+                    <h1 className="text-2xl sm:text-3xl font-bold mb-2">Sell with Us</h1>
+                    <p className="text-xs sm:text-base text-primary-100 max-w-2xl mx-auto">
                         Join our marketplace and reach millions of customers. Fill out the application below to become a verified vendor.
                     </p>
                 </div>
 
                 {/* Form Container */}
-                <div className="p-8">
+                <div className="p-4 sm:p-8">
                     <form onSubmit={handleSubmit} className="space-y-8">
 
                         {/* Store Information */}
@@ -199,9 +199,9 @@ const VendorRegistration = () => {
                                 <Landmark className="w-5 h-5 text-primary-500" />
                                 Financial Information
                             </h2>
-                            <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg flex items-start gap-3 mb-6">
-                                <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
-                                <p className="text-sm text-blue-800 dark:text-blue-300">
+                            <div className="bg-blue-50 dark:bg-blue-900/30 p-3 sm:p-4 rounded-lg flex items-start gap-2 sm:gap-3 mb-6">
+                                <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                                <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-300 leading-relaxed">
                                     This information is secure and only used for your commission payouts and tax reporting.
                                 </p>
                             </div>
@@ -260,20 +260,20 @@ const VendorRegistration = () => {
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Store Logo
                                     </label>
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-gray-700">
+                                    <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-gray-700 flex-shrink-0">
                                             {logoPreview ? (
                                                 <img src={logoPreview} alt="Logo preview" className="w-full h-full object-cover" />
                                             ) : (
-                                                <Building2 className="w-8 h-8 text-gray-400" />
+                                                <Building2 className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
                                             )}
                                         </div>
-                                        <div className="flex-1">
-                                            <label className="cursor-pointer bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-4 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors inline-block">
-                                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Choose custom logo</span>
+                                        <div className="flex-1 text-center sm:text-left">
+                                            <label className="cursor-pointer bg-white dark:bg-gray-800 border border-primary-300 dark:border-primary-600 px-4 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/10 transition-colors inline-block text-primary-600 dark:text-primary-400 border-2">
+                                                <span className="text-sm font-bold">Choose Logo</span>
                                                 <input type="file" className="hidden" accept="image/*" onChange={handleLogoChange} />
                                             </label>
-                                            <p className="text-xs text-gray-500 mt-2">JPG, PNG or GIF (Max 2MB). Ideal size 500x500px.</p>
+                                            <p className="text-[10px] sm:text-xs text-gray-500 mt-2">JPG, PNG or GIF (Max 2MB). Ideal size 500x500px.</p>
                                         </div>
                                     </div>
                                 </div>

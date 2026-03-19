@@ -90,8 +90,8 @@ function App() {
         }}
       />
 
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        {isAuthenticated && <Header />}
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+        <Header />
 
         <Routes>
           {/* Public Routes */}
@@ -107,14 +107,7 @@ function App() {
           <Route path="/password/reset/:token" element={<ResetPassword />} />
 
           {/* Protected User Routes */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/" element={<Home />} />
           <Route
             path="/profile"
             element={
@@ -139,22 +132,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/products"
-            element={
-              <ProtectedRoute>
-                <Products />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/product/:id"
-            element={
-              <ProtectedRoute>
-                <ProductDetail />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/products" element={<Products />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
           <Route
             path="/store/:vendorId"
             element={
