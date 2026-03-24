@@ -98,7 +98,7 @@ const ProductDetail = () => {
     if (isInWishlist) {
       dispatch(removeFromWishlist(id));
     } else {
-      dispatch(addToWishlist(product));
+      dispatch(addToWishlist(product.id));
     }
   };
 

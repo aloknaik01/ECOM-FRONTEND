@@ -175,6 +175,11 @@ export const orderAPI = {
       method: 'GET',
     }),
 
+  confirmCOD: (orderId) =>
+    apiClient(`/order/${orderId}/confirm-cod`, {
+      method: 'POST',
+    }),
+
   // Get my orders
   getMyOrders: () =>
     apiClient('/order/orders/me', {
@@ -479,4 +484,4 @@ export const returnAPI = {
   getMy: () => apiClient('/return/my'),
   getAllAdmin: (status) => apiClient(`/return/admin/all${status ? `?status=${status}` : ''}`),
   updateStatus: (id, data) => apiClient(`/return/admin/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-};
+};

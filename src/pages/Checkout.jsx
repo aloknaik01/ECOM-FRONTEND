@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, CreditCard, Package, ArrowRight } from 'lucide-react';
 import CouponInput from '../components/checkout/CouponInput';
 import { orderAPI, couponAPI, addressAPI } from '../utils/api';
 import toast from 'react-hot-toast';
-import { clearCart } from '../store/slices/cartSlice';
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { items } = useSelector(state => state.cart);
   const { user } = useSelector(state => state.auth);
 
@@ -30,8 +28,21 @@ const Checkout = () => {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [discount, setDiscount] = useState(0);
 
+  const normalizeShippingInfo = (data = {}) => ({
+    full_name: data.full_name ?? '',
+    phone: data.phone ?? '',
+    address: data.address ?? '',
+    city: data.city ?? '',
+    state: data.state ?? '',
+    country: data.country ?? '',
+    pincode: data.pincode ?? ''
+  });
+
   // Calculate prices
-  const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = items.reduce(
+    (sum, item) => sum + Number(item.product?.price || 0) * Number(item.quantity || 0),
+    0
+  );
   const taxRate = 0.02; // 2%
   const tax = subtotal * taxRate;
   const shipping = subtotal > 100 ? 0 : 10; // Free shipping over ₹100
@@ -48,15 +59,7 @@ const Checkout = () => {
       // Auto-select default if available
       const def = data.addresses?.find(a => a.is_default);
       if (def) {
-        setShippingInfo({
-          full_name: def.full_name,
-          phone: def.phone,
-          address: def.address,
-          city: def.city,
-          state: def.state,
-          country: def.country,
-          pincode: def.pincode
-        });
+        setShippingInfo(normalizeShippingInfo(def));
       }
     } catch (err) {
       console.log("Failed to fetch addresses");
@@ -64,15 +67,7 @@ const Checkout = () => {
   };
 
   const handleSelectAddress = (addr) => {
-    setShippingInfo({
-      full_name: addr.full_name,
-      phone: addr.phone,
-      address: addr.address,
-      city: addr.city,
-      state: addr.state,
-      country: addr.country,
-      pincode: addr.pincode
-    });
+    setShippingInfo(normalizeShippingInfo(addr));
     setShowAddressList(false);
   };
 
@@ -116,28 +111,30 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      // Prepare order items
-      const orderItems = items.map(item => ({
-        product_id: item.id,
-        quantity: item.quantity,
-        price: item.price,
-        image: item.images?.[0]?.url || '',
-        title: item.name
-      }));
-
-      // Create order
-      const orderData = await orderAPI.create({
-        order_items: orderItems,
-        shipping_info: shippingInfo,
-        total_price: total
+      // Backend expects flat shipping fields and "orderedItems"
+      const orderData = await orderAPI.place({
+        ...shippingInfo,
+        orderedItems: items.map((item) => ({
+          product: item.product,
+          quantity: Number(item.quantity || 0)
+        }))
       });
+      const createdOrderId =
+        orderData.orderId ||
+        orderData.order?.id ||
+        orderData.id ||
+        orderData.order_id ||
+        `ORD-${Date.now()}`;
+      if (!orderData.orderId && !orderData.order?.id && !orderData.id && !orderData.order_id) {
+        console.warn('Order API did not return an order id. Using fallback reference.', orderData);
+      }
 
       // Record coupon usage if applied
-      if (appliedCoupon) {
+      if (appliedCoupon && orderData.orderId) {
         try {
           await couponAPI.recordUsage({
             coupon_id: appliedCoupon.id,
-            order_id: orderData.order.id,
+            order_id: orderData.orderId,
             discount_applied: discount
           });
         } catch (error) {
@@ -145,13 +142,19 @@ const Checkout = () => {
         }
       }
 
-      // Clear cart
-      dispatch(clearCart());
+      toast.success('Order created. Please complete payment.');
 
-      toast.success('Order placed successfully!');
+      if (orderData.paymentIntent) {
+        sessionStorage.setItem(`paymentIntent_${createdOrderId}`, orderData.paymentIntent);
+      }
       
-      // Redirect to payment or success page
-      navigate(`/payment?orderId=${orderData.order.id}`);
+      // Redirect to payment options
+      navigate(`/payment?orderId=${createdOrderId}&amount=${total.toFixed(2)}`, {
+        state: {
+          clientSecret: orderData.paymentIntent,
+          amount: total
+        }
+      });
       
     } catch (error) {
       toast.error(error.message || 'Failed to place order');
@@ -338,21 +341,21 @@ const Checkout = () => {
               {/* Order Items */}
               <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
                 {items.map((item) => (
-                  <div key={item.id} className="flex gap-4">
+                  <div key={item.product?.id || `${item.product?.name}-${item.quantity}`} className="flex gap-4">
                     <img
-                      src={item.images?.[0]?.url || '/placeholder.png'}
-                      alt={item.name}
+                      src={item.product?.images?.[0]?.url || '/placeholder.png'}
+                      alt={item.product?.name || 'Product'}
                       className="w-16 h-16 object-cover rounded-lg"
                     />
                     <div className="flex-1">
                       <h3 className="text-sm font-medium text-gray-900 dark:text-white line-clamp-1">
-                        {item.name}
+                        {item.product?.name || 'Untitled product'}
                       </h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         Qty: {item.quantity}
                       </p>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                        ₹{(item.price * item.quantity).toFixed(2)}
+                        ₹{(Number(item.product?.price || 0) * Number(item.quantity || 0)).toFixed(2)}
                       </p>
                     </div>
                   </div>

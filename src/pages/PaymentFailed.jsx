@@ -132,7 +132,7 @@ const PaymentFailed = () => {
           {amount && (
             <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Amount: <strong className="text-gray-900 dark:text-white">${amount.toFixed(2)}</strong>
+                Amount: <strong className="text-gray-900 dark:text-white">₹{amount.toFixed(2)}</strong>
               </p>
             </div>
           )}

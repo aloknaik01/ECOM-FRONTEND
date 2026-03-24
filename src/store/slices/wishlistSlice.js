@@ -82,7 +82,14 @@ const wishlistSlice = createSlice({
       
       // Add to wishlist
       .addCase(addToWishlist.fulfilled, (state, action) => {
-        // Item will be fetched with next fetchWishlist call
+        const productId = action.payload;
+        const exists = state.items.some((item) => item.id === productId);
+
+        // Optimistic local update so UI reflects immediately.
+        // Full product data can still be refreshed later via fetchWishlist().
+        if (!exists) {
+          state.items.push({ id: productId });
+        }
       })
       
       // Remove from wishlist

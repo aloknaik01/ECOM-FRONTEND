@@ -40,7 +40,7 @@ const PaymentSuccess = () => {
                   Amount Paid
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  ${amount?.toFixed(2)}
+                  ₹{amount?.toFixed(2)}
                 </p>
               </div>
               <div className="text-left md:text-right">
