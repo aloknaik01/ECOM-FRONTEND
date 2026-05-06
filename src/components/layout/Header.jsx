@@ -48,7 +48,7 @@ const Header = () => {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center">
-              <img src="/shopsphere.png" alt="ShopSphere" className="h-[45px] w-auto object-contain" />
+              <img src="/sellsphere.png" alt="Sell Sphere" className="h-[45px] w-auto object-contain" />
             </Link>
 
             {/* Search Bar */}

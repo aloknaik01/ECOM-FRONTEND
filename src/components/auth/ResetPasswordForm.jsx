@@ -127,7 +127,7 @@ const ResetPasswordForm = () => {
         {/* Logo & Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
-            <img src="/shopsphere.png" alt="ShopSphere" className="h-[80px] w-auto object-contain" />
+            <img src="/sellsphere.png" alt="Sell Sphere" className="h-[80px] w-auto object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Reset Password
